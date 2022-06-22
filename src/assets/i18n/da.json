@@ -1,0 +1,21 @@
+{
+  "game": {
+    "column": "Kolonne",
+    "goodjob": "Godt arbejde!!",
+    "resume": "Genoptag",
+    "row": "Række",
+    "start": "Start"
+  },
+  "home": {
+    "inggame": "Løbende spil",
+    "newgame": "Nyt spil"
+  },
+  "localpushmessage": "Gør din hjerne strålende i dag.",
+  "setting": {
+    "close": "Luk",
+    "language": "Luk",
+    "privacy-policy": "Politik til beskyttelse af personlige oplysninger",
+    "setting": "Indstilling",
+    "sound": "lyd"
+  }
+}

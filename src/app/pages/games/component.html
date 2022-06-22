@@ -1,0 +1,16 @@
+<div id="wrapper">
+    <app-header></app-header>
+    <div class="container games">
+        <div class="header">
+            <span class='title'>More Brain Games</span>
+        </div>
+        <ul class="items">
+            <li *ngFor="let game of games" (click)="gotoMarket(game.marketUrl)">
+                <div class="image"><img [src]="'/assets/app-links/' + game.icon"></div>
+                <div class='title'>{{game.text}}</div>
+
+            </li>
+        </ul>
+
+    </div><!-- .container -->
+</div> <!-- #wrapper -->

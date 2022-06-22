@@ -1,0 +1,23 @@
+.mat-dialog-title {
+    background-color: #353535;
+    padding: 5px 10px;
+    color: #fff;
+}
+
+
+.dialog-setting ul {
+    display: flex;
+    flex-direction: column;
+    list-style:none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+
+    li {padding: 10px;}
+}
+
+button {
+    color: #fff;
+    background-color: #ff5900;
+}

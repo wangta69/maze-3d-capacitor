@@ -1,0 +1,21 @@
+{
+  "game": {
+    "column": "Cột",
+    "goodjob": "Làm tốt lắm!!",
+    "resume": "Tiếp tục",
+    "row": "Hàng",
+    "start": "Khởi đầu"
+  },
+  "home": {
+    "inggame": "Trò chơi đang diễn ra",
+    "newgame": "Trò chơi mới"
+  },
+  "localpushmessage": "Làm cho bộ não của bạn rực rỡ ngày hôm nay.",
+  "setting": {
+    "close": "Gần",
+    "language": "Gần",
+    "privacy-policy": "Privacy Policy",
+    "setting": "Cài đặt",
+    "sound": "Âm thanh"
+  }
+}

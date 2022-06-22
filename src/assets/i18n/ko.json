@@ -1,0 +1,32 @@
+{
+  "game": {
+    "column": "가로",
+    "goodjob": "참 잘했어요!!",
+    "resume": "계속하기",
+    "row": "세로",
+    "start": "시작"
+  },
+  "btn": {
+      "cancel": "취소",
+      "confirm": "확인"
+  },
+  "modals": {
+      "clean-all": {
+          "title": "지우기",
+          "subTitle": "표시된 영역이 모두 지워집니다."
+       }
+  },
+  "home": {
+    "inggame": "진행중인 게임",
+    "newgame": "새 게임"
+  },
+  "localpushmessage": "오늘도 당신의 두뇌를 명석하게..",
+  "setting": {
+    "close": "닫기",
+    "language": "언어",
+    "privacy-policy": "개인정보보호정책",
+    "rate": "앱평가",
+    "setting": "설정",
+    "sound": "소리"
+  }
+}

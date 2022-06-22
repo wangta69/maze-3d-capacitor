@@ -1,0 +1,34 @@
+{
+  "game": {
+    "column": "Column",
+    "goodjob": "Good Job!!",
+    "resume": "Continue",
+    "row": "Row",
+    "start": "Start"
+  },
+  "btn": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+  },
+  "modals": {
+      "clean-all": {
+          "title": "Clean All",
+          "subTitle": "The marked area is initialized."
+       }
+  },
+  "home": {
+    "inggame": "Continue",
+    "newgame": "New Game"
+  },
+  "localpushmessage": "Make your brain brilliant today.",
+  "setting": {
+    "close": "Close",
+    "language": "Languages",
+    "privacy-policy": "Privacy Policy",
+    "rate": "App Rating",
+    "setting": "Setting",
+    "sound": "Sound",
+    "version": "version",
+    "vibration": "vibration"
+  }
+}

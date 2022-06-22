@@ -1,0 +1,16 @@
+[
+    {"marketUrl":"game.pondol.g2048.app","icon":"2048.png","text":"2048 Game", "ver":1},
+    {"marketUrl":"game.pondol.maze.app","icon":"maze.png","text":"3D Maze Game", "ver":1},
+    {"marketUrl":"game.pondol.cryptogram.app","icon":"cryptogram.png","text":"Cryptogram Game", "ver":1},
+    {"marketUrl":"game.pondol.memory.app","icon":"memory.png","text":"Flip Flop Card Game", "ver":1},
+    {"marketUrl":"game.pondol.nonogram.app","icon":"nonogram.png","text":"Nonogram Game", "ver":1},
+    {"marketUrl":"game.pondol.slidingpuzzle.app","icon":"slidingpuzzle.png","text":"Sliding Puzzle Game", "ver":1},
+    {"marketUrl":"game.pondol.sokoban.app","icon":"sokoban.png","text":"Sokoban Game", "ver":1},
+    {"marketUrl":"game.pondol.sudoku.app","icon":"sudoku.png","text":"Sudoku Game", "ver":1},
+    {"marketUrl":"game.pondol.tower.app","icon":"tower.png","text":"Tower Game", "ver":1},
+    {"marketUrl":"game.pondol.watersort.app","icon":"watersort.png","text":"Color Water Sorting Game", "ver":1},
+    {"marketUrl":"game.pondol.floodfill.app","icon":"floodfill.png","text":"Flood Fill Game", "ver":1},
+    {"marketUrl":"game.pondol.coloring.app","icon":"coloring.png","text":"Funny Coloring Book", "ver":1},
+    {"marketUrl":"edu.pondol.solarsystem.app","icon":"solarsystem.png","text":"Solar System - 3D Real Scale", "ver":1},
+    {"marketUrl":"game.pondol.matchblock.app","icon":"matchblock.png","text":"Match Block Game", "ver":1}
+]

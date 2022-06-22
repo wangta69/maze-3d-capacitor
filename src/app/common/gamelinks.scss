@@ -1,0 +1,32 @@
+.more-app {
+    .inner-txt {display: flex; flex-direction: column;}
+
+    &::ng-deep .mat-button-wrapper {
+         line-height: 14px;
+         padding: 0 0 0 0;
+         display: inline;
+    }
+}
+
+eco-fab-speed-dial-actions {
+    ::ng-deep button {
+        overflow: visible;
+        position: relative;
+        background-color: rgba(255, 255, 255, 0) !important;
+        img  {
+            width: 30px; border-radius: 50%; margin-right: 5px;
+        }
+
+        label {
+            position: absolute;
+            left: 40px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.2);
+            line-height: 24px;
+            padding: 4px 8px;
+            border-radius: 10px;
+        }
+        // contain: layout;
+    }
+}
+

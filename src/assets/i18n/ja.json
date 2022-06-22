@@ -1,0 +1,21 @@
+{
+  "game": {
+    "column": "カラム",
+    "goodjob": "よくやった!!",
+    "resume": "履歴書",
+    "row": "行",
+    "start": "開始"
+  },
+  "home": {
+    "inggame": "進行中のゲーム",
+    "newgame": "新しいゲーム"
+  },
+  "localpushmessage": "今日あなたの脳を明晰に。",
+  "setting": {
+    "close": "閉じる",
+    "language": "閉じる",
+    "privacy-policy": "個人情報保護方針",
+    "setting": "設定",
+    "sound": "音"
+  }
+}

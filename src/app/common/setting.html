@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>{{ 'setting.setting' | translate }}</h2>
+
+<mat-dialog-content class='dialog-setting'>
+    <ul>
+        <li>
+            {{ 'setting.version' | translate }} : {{version}}
+        </li>
+        <li>
+            <mat-slide-toggle
+                [checked]="sound"
+                (change)="setSound($event)">
+                {{ 'setting.sound' | translate }}
+            </mat-slide-toggle>
+        </li>
+        <li>
+            <mat-slide-toggle
+                [checked]="vibration"
+                (change)="setVibration($event)">
+                {{ 'setting.vibration' | translate }}
+            </mat-slide-toggle>
+        </li>
+        <li>
+            <span (click)="appRating()">{{ 'setting.rate' | translate }}</span>
+        </li>
+        <li>
+            <mat-form-field>
+              <mat-label>Template</mat-label>
+              <mat-select (selectionChange)="setTemplate($event)" [value]="template">
+                <mat-option *ngFor="let template of templates" [value]="template.type">{{template.template}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </li>
+        <!--
+
+        <li>
+            <mat-form-field>
+              <mat-label>{{ 'setting.language' | translate }}</mat-label>
+              <mat-select (selectionChange)="setLanguage($event)" [value]="language">
+                <mat-option *ngFor="let language of languages" [value]="language.language">{{language.country}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </li>
+        -->
+        <li>
+            <a routerLink="/policy"  (click)="gotoLink()">{{ 'setting.privacy-policy' | translate }}</a> <span (click)="setTestLanguage('en')">[En]</span>
+        </li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <ng-container ngProjectAs="btn-close"><button mat-button matDialogClose>{{ 'setting.close' | translate }}</button></ng-container>
+</mat-dialog-actions>

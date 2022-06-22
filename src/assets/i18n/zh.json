@@ -1,0 +1,21 @@
+{
+  "game": {
+    "column": "柱",
+    "goodjob": "做得好!!",
+    "resume": "恢复",
+    "row": "行",
+    "start": "开始"
+  },
+  "home": {
+    "inggame": "正在进行的比赛",
+    "newgame": "新游戏"
+  },
+  "localpushmessage": "让你的大脑今天辉煌。",
+  "setting": {
+    "close": "关",
+    "language": "关",
+    "privacy-policy": "隐私政策",
+    "setting": "设置",
+    "sound": "声音"
+  }
+}

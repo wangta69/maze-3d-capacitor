@@ -1,0 +1,21 @@
+{
+  "game": {
+    "column": "Colonna",
+    "goodjob": "Buon lavoro!!",
+    "resume": "Curriculum vitae",
+    "row": "Riga",
+    "start": "Inizio"
+  },
+  "home": {
+    "inggame": "Gioco in corso",
+    "newgame": "Nuovo gioco"
+  },
+  "localpushmessage": "Rendi brillante il tuo cervello oggi.",
+  "setting": {
+    "close": "Chiudi",
+    "language": "Chiudi",
+    "privacy-policy": "Informativa sulla privacy",
+    "setting": "Setting",
+    "sound": "Suono"
+  }
+}

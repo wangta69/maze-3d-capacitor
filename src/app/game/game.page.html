@@ -1,0 +1,42 @@
+<div id="wrapper" (window:resize)="onResize($event)">
+    <app-header></app-header>
+    <div class="container">
+        <div class='controll-box'>
+            <button mat-raised-button color="primary" (click)="onClickButton('new')">New Game</button>
+            <button mat-raised-button color="accent" (click)="onClickButton('hint')">Hint</button>
+            <button mat-stroked-button color='primary'>{{maxScore | number}}</button>
+            <!-- <button mat-raised-button color="accent" (click)="onClickButton('hint')">
+                <span *ngIf="!showmoves">Show</span>
+                <span *ngIf="showmoves">Hide</span>
+                Moves</button>
+            <button mat-raised-button color="warn" (click)="onClickButton('ai')">
+                <span *ngIf="!aibot">Enable</span>
+                <span *ngIf="aibot">Disable</span>
+                 AI Bot
+            </button> -->
+        </div>
+        <div class="score">
+            score: {{score}}
+        </div>
+
+        <div class="contents" #contents>
+            <!-- width="640" height="480" -->
+            <canvas #gameCanvas
+                (mousedown)="onMouseDown($event)"
+                (document:mousemove)="onMouseMove($event)"
+                (document:mouseup)="onMouseUp()"
+                (document:mouseout)="onMouseOut()"
+                (document:touchstart)="onTouchStart($event)"
+                (document:touchend)="onTouchEnd()"
+                (document:touchmove)="onTouchMove($event)"
+                >
+            </canvas>
+
+            <!-- <app-gamelinks></app-gamelinks> -->
+        </div>
+
+    </div>
+    <footer>
+    </footer>
+</div><!-- #wrapper -->
+
