@@ -1,21 +1,45 @@
 {
   "game": {
-    "column": "Kolonne",
-    "goodjob": "Godt arbejde!!",
-    "resume": "Genoptag",
-    "row": "Række",
-    "start": "Start"
+    "callisto": "Callisto",
+    "deimos": "Deimos",
+    "earth": "jorden",
+    "europa": "europa",
+    "ganymede": "Ganymede",
+    "hyperion": "Hyperion",
+    "iapetus": "Iapetus",
+    "info": {
+      "density": "massefylde",
+      "diameter": "diameter",
+      "distance": "afstand",
+      "gravity": "tyngdekraft",
+      "mass": "masse",
+      "radius": "radius",
+      "revolution": "revolution",
+      "rotation": "rotation",
+      "satellites": "satellitter"
+    },
+    "io": "io",
+    "jupiter": "jupiter",
+    "mars": "mars",
+    "mercury": "kviksølv",
+    "moon": "måne",
+    "neptune": "neptun",
+    "phobos": "Phobos",
+    "rhea": "rhea",
+    "saturn": "saturn",
+    "sun": "sol",
+    "titan": "titan",
+    "triton": "triton",
+    "uranus": "uranus",
+    "venus": "Venus"
   },
-  "home": {
-    "inggame": "Løbende spil",
-    "newgame": "Nyt spil"
-  },
-  "localpushmessage": "Gør din hjerne strålende i dag.",
+  "localpushmessage": "Ha det rart og held og lykke til dig",
   "setting": {
-    "close": "Luk",
-    "language": "Luk",
-    "privacy-policy": "Politik til beskyttelse af personlige oplysninger",
+    "close": "Tæt",
+    "language": "Sprog",
+    "privacy-policy": "Fortrolighedspolitik",
+    "rate": "App. Bedømmelse",
     "setting": "Indstilling",
-    "sound": "lyd"
+    "sound": "Lyd"
   }
 }

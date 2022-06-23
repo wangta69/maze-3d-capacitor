@@ -1,0 +1,55 @@
+.domContainer {
+    height: calc(100vh - 100px);
+    canvas {
+        background-color: black;
+    }
+}
+.container {
+    height: 100px !important;
+    box-sizing: border-box;
+    .dashboard {
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        > div {
+            display: flex;
+            justify-content:space-between;
+            width: 100%;
+            margin: 0.5em;
+            color: #fff;
+
+            .level {
+                > div {
+                    display: inline-block;
+                    /*width: 100px;
+                    height: 30px;
+                    overflow-x: hidden;
+                    */
+                }
+                 span {
+                    display: inline-block;
+                    margin-right: 3px;
+                    border: 2px outset gray;
+                    border-radius: 0px 0px 20px 20px;
+                    padding: 3px;
+
+                    &.selected {
+                        border: 2px outset #FFF736;
+                    }
+                }
+            }
+            .hint {
+                > span {
+                    display: inline-block;
+                    margin-right: 20px;
+                    border: 2px outset #FFF736;
+                    border-radius: 0px 0px 0px 10px;
+                    padding: 3px;
+                }
+            }
+        }
+
+    }
+}
+

@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "game-match-3": {
+    "maze3d": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/game-match-3",
+            "outputPath": "dist/maze3d",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -44,13 +44,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 }
               ],
               "fileReplacements": [
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "game-match-3:build:production"
+              "browserTarget": "maze3d:build:production"
             },
             "development": {
-              "browserTarget": "game-match-3:build:development"
+              "browserTarget": "maze3d:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "game-match-3:build"
+            "browserTarget": "maze3d:build"
           }
         },
         "test": {
@@ -112,5 +112,5 @@
       }
     }
   },
-  "defaultProject": "game-match-3"
+  "defaultProject": "maze3d"
 }

@@ -9,7 +9,7 @@ export class ConfigService {
     private languageSubject = new Subject<any>();
     private templateSubject = new Subject<any>();
     private config: any;
-    private storageName = 'game.match3.config';
+    private storageName = 'game.maze3d.config';
 
     constructor()
     {

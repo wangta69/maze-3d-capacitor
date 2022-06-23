@@ -13,7 +13,7 @@ import { GameSettingDialogComponent, GameSettingIconComponent } from './setting'
 @Component({
     selector: 'app-header',
     template: `
-    <header>
+    <header class="title">
         <div class="title">
              <a href="/"><img src="/assets/icon/favicon.png"></a>
         </div>

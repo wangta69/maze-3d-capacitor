@@ -1,0 +1,45 @@
+{
+  "game": {
+    "callisto": "calisto",
+    "deimos": "deimos",
+    "earth": "terra",
+    "europa": "europa",
+    "ganymede": "Ganimede",
+    "hyperion": "hyperion",
+    "iapetus": "iapetus",
+    "info": {
+      "density": "densidade",
+      "diameter": "diâmetro",
+      "distance": "distância",
+      "gravity": "gravidade",
+      "mass": "massa",
+      "radius": "raio",
+      "revolution": "revolução",
+      "rotation": "rotação",
+      "satellites": "satélites"
+    },
+    "io": "io",
+    "jupiter": "Júpiter",
+    "mars": "Marte",
+    "mercury": "mercúrio",
+    "moon": "lua",
+    "neptune": "Netuno",
+    "phobos": "phobos",
+    "rhea": "ema",
+    "saturn": "Saturno",
+    "sun": "Dom",
+    "titan": "titã",
+    "triton": "triton",
+    "uranus": "Urano",
+    "venus": "Vênus"
+  },
+  "localpushmessage": "Tenha boa e boa sorte para você",
+  "setting": {
+    "close": "Fechar",
+    "language": "línguas",
+    "privacy-policy": "Política de Privacidade",
+    "rate": "Aplicativo. Avaliação",
+    "setting": "Configuração",
+    "sound": "Som"
+  }
+}

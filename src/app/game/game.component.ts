@@ -1,984 +1,615 @@
-import { Component, ViewChild, ViewEncapsulation, ElementRef, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
-// https://rembound.com/articles/bubble-shooter-game-tutorial-with-html5-and-javascript#demo
-// https://rembound.com/articles/how-to-make-a-match3-game-with-html5-canvas
-import { Howl } from 'howler';
-import { Storage } from '../services/storage.service';
-import { ConfigService } from '../services/config.service';
+import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { AdMobService } from '../services/cap-admob.service';
+import * as THREE from 'three';
+import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
+import OrbitControls from '../controller/orbit.controls';
+// import OrbitControls from 'orbit-controls-es6';
+
+// 게임 플로우
+// 1. 접근시 게임레벨 선택 (현재 레벨을 기준으로 하고 최고치에서 하단으로만 선택가능)및 start
+// 2. start 시 화면이 먼 거리에서 아래로 focus 되면서 focus가 끝나면 fadein 시킨다.
+// 3.게임 종료시는 현재 레벨에서 자동 업데이트
+// 4. full 맵은 액션은 안되고 맵만 작게 보여준다. (이때 랜덤 광고 노출)
+
+import * as CANNON from 'cannon';
+import { CannonDebugRenderer } from './debugger';
+import { Maze } from './maze';
+
+export type GameStatus = 'init' | 'ready' | 'play' | 'fadeIn' | 'fadeOut';
+
+import { Storage } from '../services/storage.service';
+import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-game',
-  templateUrl: 'game.page.html',
-  styleUrls: ['game.page.scss'],
+  selector: 'app-root',
+  templateUrl: './game.html',
+  styleUrls: ['./game.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('gameCanvas', {static: true}) gameCanvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
-    // @HostListener('window:resize', ['$event'])
-    // onResize(event: any) {
-    //     console.log(event);
-    //   event.target.innerWidth;
-    // }
+export class GameComponent implements OnInit, AfterViewInit {
+    @ViewChild('domContainer', {static: true}) domContainer!: ElementRef<HTMLDivElement>;
+    private sceneWidth!: number;
+    private sceneHeight!: number;
+    private gameStatus: GameStatus = 'init';
 
-    // Get the canvas and context
-    // private canvas = document.getElementById('viewport');
-    private canvas: any;
-    private context: any;
+    private renderer!: THREE.WebGLRenderer;
+    private scene!: THREE.Scene;
+    private camera!: THREE.PerspectiveCamera;
+    private light!: THREE.PointLight;
+    private endPointLight!: THREE.PointLight;
+    private controls!: OrbitControls;
 
-    // Timing and frames per second
-    private lastframe = 0;
-    private fpstime = 0;
-    private framecount = 0;
-    private fps = 0;
-    private storage: Storage;
 
-    // Mouse dragging
-    private drag = false;
+    // private material: THREE.MeshLambertMaterial;
+    private ballMesh!: THREE.Mesh;
+    private ballRadius = 0.25;
+    private planeMesh!: THREE.Mesh;
+    private blockMeshs: THREE.Mesh[] = [];
+    private blockBodies: CANNON.Body[] = [];
+    // from now for cannon
+    private world: any;
+    private ballBody!: CANNON.Body;
+    private cannonDebugRenderer: any;
 
-    // Level object
-    private level: any = {
-        x: 0,
-        y: 0,
-        columns: 8,     // Number of tile columns
-        rows: 8,        // Number of tile rows
-        tilewidth: 40,  // Visual width of a tile
-        tileheight: 40, // Visual height of a tile
-        tiles: [[]],      // The two-dimensional tile array
-        selectedtile: { selected: false, column: 0, row: 0 }
-    };
 
-    // All of the different tile colors in RGB
-    private tilecolors = [
-        [255, 128, 128],
-        [128, 255, 128],
-        [128, 128, 255],
-        [255, 255, 128],
-        [255, 128, 255],
-        [128, 255, 255],
-        [255, 255, 255]
-    ];
+    private fullMode = false;
+    private highLevel!: number;
+    public level!: number; // 현재 레벨
+    public levels: number[] = []; // 상단에 디스플레이될 레벨들
+    private orbitControllerEnable = false;
 
-    private tileimages: any = [];
-    // Clusters and moves that were found
-    private clusters: any = [];  // { column, row, length, horizontal }
-    private moves: any = [];     // { column1, row1, column2, row2 }
-    // Current move
-    private currentmove = { column1: 0, row1: 0, column2: 0, row2: 0 };
-    // Game states
-    private gamestates = { init: 0, ready: 1, resolve: 2 };
-    private gamestate = this.gamestates.init;
+    private storage: any;
 
-    // Score
-    public maxScore = 0;
-    public score = 0;
-
-    // Animation variables
-    private animationstate = 0;
-    private animationtime = 0;
-    private animationtimetotal = 0.3;
-
-    // Show available moves
-    public showmoves = false;
-
-    // The AI bot
-    public aibot = false;
-
-    // Game Over
-    private gameover = false;
-
-    private soundsEnable = false; // new 게임시 sounds 가 울리는 것을 회피
-    private sounds: any = {
-        explode: null,
-    };
-
-    private mode: any = {
-        type1: {
-            filepath: 'tiles',
-            fileext: 'png',
-            bgcolor: '#000000'
-        },
-        type2: {
-            filepath: 'tiles2',
-            fileext: 'jpg',
-            bgcolor: '#242424'
-        }
+/*
+    @HostListener('document:mousemove', ['$event'])
+    mousemove(e: any) {
+        this.mouse.x = ( e.clientX / this.sceneWidth ) * 2 - 1;
+        this.mouse.y = - ( e.clientY / this.sceneHeight ) * 2 + 1;
     }
-    private template = 'type2';
-    private ngUnsubscribe = new Subject();
+    */
+    /*
+    @HostListener('document:mousedown', ['$event'])
+    mousedown(e: any) {
+        this.mouse.x = ( e.clientX / this.sceneWidth ) * 2 - 1;
+        this.mouse.y = - ( e.clientY / this.sceneHeight ) * 2 + 1;
+    }
+    */
+
+    @HostListener('document:keydown', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        // this.key = event.key;
+        this.handleKeyDown(event);
+    }
+
+    @HostListener('window:resize')
+    onResize() {
+        this.onWindowResize();
+    }
+
     constructor(
-        private configSvc: ConfigService,
+        private admobService: AdMobService,
     ) {
         this.storage = new Storage();
-        this.maxScore = this.storage.maxScore;
-        this.template = this.configSvc.template;
-
-        this.sounds['explode'] = new Howl({
-          src: ['/assets/sounds/explode.mp3'],
-          preload: true,
-        });
-
-        this.loadImages();
     }
-
     ngOnInit() {
-        this.configSvc.getTemplate()
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe((template) => {
-            this.template = template;
-            this.loadImages();
+
+    }
+    ngAfterViewInit() {
+        const interval = setInterval(() => {
+            const flag = this.domContainer.nativeElement.offsetHeight;
+            if (flag) {
+                clearInterval(interval);
+                this.init();
+            }
+        }, 10);
+    }
+    private init() {
+
+        // this.sceneWidth = window.innerWidth;
+        // this.sceneHeight  = window.innerHeight;
+        this.sceneWidth = this.domContainer.nativeElement.offsetWidth;
+        this.sceneHeight  = this.domContainer.nativeElement.offsetHeight;
+
+
+        this.level = this.storage.level;
+        this.highLevel = this.storage.highLevel;
+
+
+        this.setRenderer();
+        this.setScene();
+        this.setCamera();
+        this.setLight(); // Point Light
+        if (this.orbitControllerEnable === true) {
+            this.setOrbitController();
+        }
+
+        this.initCannon();
+
+        // Add the ball.
+        this.addBall();
+
+        // Add the maze.
+        this.createMaze();
+
+        // Add the ground.
+        this.createGround();
+
+        this.actGameState('init');
+
+        // this.mouse = new THREE.Vector2();
+        // this.setAxesHelper();
+        // this.setGridHelper();
+        this.update();
+    }
+
+    private setRenderer() {
+        this.renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer : true }); // renderer with transparent backdrop
+        this.renderer.setSize( this.sceneWidth, this.sceneHeight );
+        this.domContainer.nativeElement.appendChild(this.renderer.domElement);
+        // renderer.shadowMapSoft = PlanetsInfo.config.shadows.softShadows;
+    }
+
+    private setScene() {
+        this.scene = new THREE.Scene(); // the 3d scene
+        // this.scene.fog = new THREE.FogExp2( 0x000000, 0.14 );
+        this.scene.add( new THREE.AmbientLight( 0xAAAAAA ) );
+
+    }
+
+    // 카메라 관련 정의 시작
+    private setCamera() {
+        const fov = 60; // [Float]  Camera frustum vertical field of view, from bottom to top of view, in degrees. Default is 50.
+        // const aspect = this.sceneWidth / this.sceneHeight;  // the canvas default
+        const aspect = this.sceneWidth / this.sceneHeight;  // [Float] Camera frustum aspect ratio, usually the canvas width / canvas height. Default is 1 (square canvas).
+
+        const near = 1; // [Float] Camera frustum near plane. Default is 0.1.
+        const far = 1000; // [Float]  Camera frustum far plane. Default is 2000.
+        this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        this.camera.position.set(1, 1, 10);
+    }
+
+    private setLight() {
+        this.light = new THREE.PointLight(0xffffff, 1);
+        this.light.position.set(1, 1, 1.3);
+        this.scene.add(this.light);
+    }
+
+    // 카메라 관련 정의 끝
+    private addBall() {
+        const ironTexture = new THREE.TextureLoader().load( '/assets/images/ball.png' );
+        const g = new THREE.SphereGeometry(this.ballRadius, 32, 16);
+        const m = new THREE.MeshPhongMaterial({map: ironTexture});
+        this.ballMesh = new THREE.Mesh(g, m);
+        this.ballMesh.position.set(0, 1, this.ballRadius);
+        this.scene.add(this.ballMesh);
+
+        // 3. 반경 및 질량값 생성(for ball)
+        const mass = 1;
+        const sphereShape = new CANNON.Sphere(this.ballRadius);
+        this.ballBody = new CANNON.Body({ mass });
+        // this.ballBody = new CANNON.RaycastVehicle({chassisBody});
+        this.ballBody.addShape(sphereShape);
+        // this.ballBody.position.set(1, 1, this.ballRadius);
+        this.ballBody.position.set(0, 1, 1);
+        this.ballBody.linearDamping = 0.4;
+        // 속도 저하값 생성
+        // this.ballBody.linearDamping = 0.9;
+        this.world.add(this.ballBody);
+    }
+
+    private createMaze() {
+        const maze = new Maze(this.level, this.level);
+        // const mazeMesh =
+        this.buildMazeMesh(maze.result);
+    //    this.scene.add(mazeMesh);
+    }
+
+    private removeGround() {
+        if (this.planeMesh) {
+            this.planeMesh.geometry.dispose();
+            // this.planeMesh.material.dispose();
+            this.scene.remove( this.planeMesh );
+        }
+    }
+    private createGround() {
+        this.removeGround();
+        const planeTexture = new THREE.TextureLoader().load( '/assets/images/concrete.png' );
+        // PlaneGeometry(width : Float, height : Float, widthSegments : Integer, heightSegments : Integer)
+        const g = new THREE.PlaneGeometry(this.level * 2 + 1, this.level * 2 + 1, this.level, this.level);
+        planeTexture.wrapS = planeTexture.wrapT = THREE.RepeatWrapping;
+        planeTexture.repeat.set(this.level * 5, this.level * 5);
+        const m = new THREE.MeshPhongMaterial({map: planeTexture});
+        this.planeMesh = new THREE.Mesh(g, m);
+        this.planeMesh.position.set((this.level * 2) / 2, (this.level * 2) / 2, 0);
+        this.planeMesh.rotation.set(0, 0, 0);
+        this.scene.add(this.planeMesh);
+
+        const groundShape = new CANNON.Plane();
+        const groundBody = new CANNON.Body({ mass: 0 });
+        groundBody.addShape(groundShape);
+        // groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+        this.world.add(groundBody);
+    }
+
+    // https://github.com/schteppe/cannon.js/wiki/Hello-Cannon.js!
+    private initCannon() {
+        // Setup our world
+        // 1. world 생성
+        this.world = new CANNON.World();
+        this.world.gravity.set(0, 0, -9.82); // m/s²
+        this.world.broadphase = new CANNON.NaiveBroadphase();
+        this.world.solver.iterations = 10;
+
+        // this.cannonDebugRenderer = new CannonDebugRenderer( this.scene, this.world );
+    }
+
+
+    // private setGridHelper() {
+    //     const helper = new THREE.GridHelper( 1000, 40, 0x303030, 0x303030 );
+    //     helper.position.y = -75;
+    //     this.scene.add( helper );
+    // }
+
+    private setOrbitController() {
+        this.controls = new OrbitControls( this.camera, this.renderer.domElement );
+        this.controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+        this.controls.dampingFactor = 0.005;
+    //     this.controls.screenSpacePanning = false;
+        this.controls.minDistance = 1;
+        this.controls.maxDistance = Infinity;
+        // this.controls.maxPolarAngle = Math.PI / 2; //
+        // this.controls.enableZoom = true;
+        this.controls.zoomSpeed = 1.2;
+    }
+
+    // private setAxesHelper() {
+    //     this.scene.add( new THREE.AxesHelper(200) );
+    // }
+
+
+
+
+    private render() {
+        // const timer = 0.0001 * Date.now();
+        const dt = 1 / 60;
+
+        this.world.step(dt, 8, 3);
+        const position = new THREE.Vector3(this.ballBody.position.x, this.ballBody.position.y, this.ballBody.position.z);
+        this.ballMesh.position.copy(position);
+
+
+
+        const quaternion = new THREE.Quaternion(this.ballBody.quaternion.x, this.ballBody.quaternion.y, this.ballBody.quaternion.z, this.ballBody.quaternion.w);
+        // quaternion.setFromAxisAngle( new THREE.Vector3( this.ballBody.quaternion.x, this.ballBody.quaternion.y, this.ballBody.quaternion.z ), this.ballBody.quaternion.w);
+        this.ballMesh.quaternion.copy(quaternion);
+        // this.cannonDebugRenderer.update();
+
+        // Update camera and light positions.
+        // 아래처럼 카메라의 포지션을 설정하면 ballMesh를 천천히 따라가는 효과가 있음
+        if (this.fullMode === true) {
+
+        } else if (this.orbitControllerEnable === false) {
+            this.camera.position.x += (this.ballMesh.position.x - this.camera.position.x) * 0.1;
+            this.camera.position.y += (this.ballMesh.position.y - this.camera.position.y) * 0.1;
+            this.camera.position.z += (5 - this.camera.position.z) * 0.05;
+            this.light.position.x = this.camera.position.x;
+            this.light.position.y = this.camera.position.y;
+            this.light.position.z = this.camera.position.z - 3.7;
+
+            // if (this.camera.position.z < 4.1) {
+            //    this.camera.position.z = 4;
+            // }
+        }
+
+        switch (this.gameStatus) {
+            case 'fadeIn': // 점점 밝아진 후 플레이
+                this.light.intensity += 0.1 * (1.0 - this.light.intensity);
+
+                if (Math.abs(this.light.intensity - 1.0) < 0.05) {
+                    this.light.intensity = 1.0;
+                    this.actGameState('play');
+                }
+                break;
+            case 'init':
+            //    this.light.intensity += 0.1 * (0.0 - this.light.intensity);
+                break;
+            case 'fadeOut': // 어두워 진 후 새게임 생성
+                this.light.intensity += 0.1 * (0.0 - this.light.intensity);
+                if (Math.abs(this.light.intensity - 0.0) < 0.1) {
+                    this.light.intensity = 0.0;
+                    this.actGameState('ready');
+                }
+                break;
+        }
+
+        this.renderer.render( this.scene, this.camera );
+    }
+
+    private update = () => {
+        this.render();
+        requestAnimationFrame(this.update); // request next update
+    }
+
+
+
+
+    private removeMazeMesh() {
+        this.blockMeshs.forEach( ( block: THREE.Mesh ) => {
+            block.geometry.dispose();
+            this.scene.remove( block );
+        });
+
+        this.scene.remove( this.endPointLight );
+
+        this.blockBodies.forEach( ( block: CANNON.Body ) => {
+            this.world.remove( block );
         });
     }
+    private buildMazeMesh(field: any) {
+        this.removeMazeMesh();
+        const brickTexture = new THREE.TextureLoader().load( '/assets/images/brick.png' );
+        // const dummy = new THREE.Geometry();
+        const material = new THREE.MeshPhongMaterial({map: brickTexture});
+        for (let i = 0; i < field.length; i++) {
+           for (let j = 0; j < field.length; j++) {
+               if (field[i][j]) {
+                   // const geometry = new THREE.CubeGeometry(1, 1, 1, 1, 1, 1);
+                    const geometry = new THREE.BoxGeometry(1, 1, 1);
+                    const blockMesh = new THREE.Mesh(geometry, material);
+                    blockMesh.position.x = i;
+                    blockMesh.position.y = j;
+                    blockMesh.position.z = 0.5;
+                    this.blockMeshs.push(blockMesh);
+                    this.scene.add(blockMesh);
 
-    ngAfterViewInit() {
-        this.init();
+
+                    // const boxShape = new CANNON.Box(new CANNON.Vec3(0.75, 0.75, 0.75));
+                    const boxShape = new CANNON.Box(new CANNON.Vec3(1 / 2, 1 / 2, 1 / 2));
+                    const boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    boxBody.position.set(i, j, 0.5);
+                    this.blockBodies.push(boxBody);
+                    this.world.addBody(boxBody);
+
+                    // const mazeMesh = new THREE.Mesh(geometry, material);
+
+               }
+           }
+        }
+
+        // 밖으로 나가지 못하게 투명 wall 설치
+        // 시작점 투명 wall
+        const startBoxShape = new CANNON.Box(new CANNON.Vec3(1 / 2, 1 / 2, 1 / 2));
+        const startBoxBody = new CANNON.Body({ mass: 0 });
+        startBoxBody.addShape(startBoxShape);
+        startBoxBody.position.set(-1, 1, 0.5);
+        this.world.addBody(startBoxBody);
+        this.blockBodies.push(startBoxBody);
+
+        // 끝점 투명 wall
+        const endBoxShape = new CANNON.Box(new CANNON.Vec3(1 / 2, 1 / 2, 1 / 2));
+        const endBoxBody = new CANNON.Body({ mass: 0 });
+        endBoxBody.addShape(endBoxShape);
+        endBoxBody.position.set(this.level * 2 - 1, this.level * 2 + 1, 0.5);
+        this.addEndPointLight(this.level * 2 - 1, this.level * 2 + 1, 1);
+        this.world.addBody(endBoxBody);
+        this.blockBodies.push(endBoxBody);
+
+        // 마지막 박스에 도착했을 경우
+        endBoxBody.addEventListener('collide', () => {
+            this.actGameState('fadeOut');
+            this.level++;
+            this.storage.level = this.level;
+            this.storage.highLevel = this.level;
+            this.showInterstitial();
+
+        });
+
     }
 
-    ngOnDestroy() {
+    private addEndPointLight( x: number, y: number, z: number ) {
+        const textureLoader = new THREE.TextureLoader();
+        const textureFlare = textureLoader.load( '/assets/images/lensflare.png' );
+        this.endPointLight = new THREE.PointLight( 0xffffff, 10, 1 );
+
+        this.endPointLight.color.setHSL( 0.08, 0.8, 0.5 );
+        this.endPointLight.position.set( x, y, z );
+        this.scene.add( this.endPointLight );
+        const lensflare = new Lensflare();
+        lensflare.addElement( new LensflareElement( textureFlare, 700, 0, this.endPointLight.color ) );
+        this.endPointLight.add( lensflare );
     }
 
-    init() {
 
-        // Get the grid position
-        // Add mouse events
-        this.canvas = this.gameCanvas.nativeElement;
-        this.context = this.canvas.getContext('2d');
+    // 브라우저 제어시
+    private handleKeyDown(e: KeyboardEvent) {
+        // Define some impulse to apply
+        const rotationMatrix = new THREE.Matrix4();
+        const thrustImpulse = 1;
+        let forceVector!: THREE.Vector3;
+        switch (e.key) {
+            case 'ArrowUp':
+                forceVector = new THREE.Vector3(0, thrustImpulse, 0).applyMatrix4(rotationMatrix);
+            // this.ballBody.applyEngineForce(up ? 0 : -maxForce, 2);
+            // vehicle.applyEngineForce(up ? 0 : -maxForce, 3);
+                break;
+            case 'ArrowDown':
+                forceVector = new THREE.Vector3(0, -thrustImpulse, 0).applyMatrix4(rotationMatrix);
+                break;
+            case 'ArrowLeft':
+                forceVector = new THREE.Vector3(-thrustImpulse, 0, 0).applyMatrix4(rotationMatrix);
+                break;
+            case 'ArrowRight':
+                forceVector = new THREE.Vector3(thrustImpulse, 0, 0).applyMatrix4(rotationMatrix);
+                break;
+        }
 
-        this.resizeCanvas();
-        // const canvasWidth = window.innerWidth;
-        // const canvasHeight = window.innerHeight;
-        // const canvasSize = canvasWidth > canvasHeight ? canvasHeight : canvasWidth;
-        // this.level.tilewidth = Math.floor((canvasSize - 30) / this.level.columns); // 마진을 10 준다.
-        // this.level.tileheight = this.level.tilewidth;
-        //
-        // this.level.x = (canvasSize - (this.level.tilewidth * this.level.columns)) / 2;
-        // this.canvas.width = canvasSize;
-        // this.canvas.height = canvasSize;
+        // Calculate the vector we'll use to apply the impulse in the object's positive Z direction
 
+        if (forceVector) {
+            // Convert the vector to a CANNON vector, otherwise it does nothing
+            const cannonVector = new CANNON.Vec3(forceVector.x, forceVector.y, forceVector.z);
 
-        // Initialize the two-dimensional tile array
-        for (let i=0; i< this.level.columns; i++) {
-            this.level.tiles[i] = [];
-            for (let j = 0; j < this.level.rows; j++) {
-                // Define a tile type and a shift parameter for animation
-                this.level.tiles[i][j] = { type: 0, shift:0 }
+            // Apply the impulse at the center of the body
+            this.ballBody.applyImpulse(cannonVector, this.ballBody.position);
+        }
+    }
+
+    // 모바일 제어
+    public setClick(e: MouseEvent) {
+        if (this.fullMode === false) {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            //  This is the mouse clicks that do work
+            mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+            raycaster.setFromCamera( mouse, this.camera );
+
+            const thrustImpulse = 5;
+            let forceVector: THREE.Vector3;
+            // forceVector = raycaster.ray.direction.applyMatrix4(rotationMatrix
+            forceVector = raycaster.ray.direction;
+            if (forceVector) {
+                // Convert the vector to a CANNON vector, otherwise it does nothing
+                const cannonVector = new CANNON.Vec3(forceVector.x * thrustImpulse, forceVector.y * thrustImpulse, forceVector.z * thrustImpulse);
+
+                // Apply the impulse at the center of the body
+                this.ballBody.applyImpulse(cannonVector, this.ballBody.position);
             }
+            // var intersects = ray.intersectObjects( targetList, true );
+
+        } else {
+            this.fullMode = false;
         }
     }
 
-    private resizeCanvas() {
-        const canvasWidth = window.innerWidth;
-        const canvasHeight = window.innerHeight;
-        const canvasSize = canvasWidth > canvasHeight ? canvasHeight : canvasWidth;
-        this.level.tilewidth = Math.floor((canvasSize - 30) / this.level.columns); // 마진을 10 준다.
-        this.level.tileheight = this.level.tilewidth;
 
-        this.level.x = (canvasSize - (this.level.tilewidth * this.level.columns)) / 2;
-        this.canvas.width = canvasSize;
-        this.canvas.height = canvasSize;
-    }
-
-    private start() {
-        // New game
-        this.newGame();
-        this.main(0);
-    }
-
-    private async loadImages() {
-        const titles = 7;
-        let  loadcnt = 0;
-        for(let i = 0; i < titles; i++) {
-            // const filepath = '/assets/images/tiles/' + i +'.png';
-            const filepath = '/assets/images/' + this.mode[this.template].filepath + '/' + i +'.' + this.mode[this.template].fileext;
-            this.tileimages[i] = new Image();
-            this.tileimages[i].src = filepath;
-            this.tileimages[i].onload = () => {
-                // this.drawImage();
-                loadcnt ++;
-                if (titles === loadcnt) {
-                    this.start();
-                }
-
-            };
-        }
-
-    }
-    // Main loop
-    private main(tframe: number) {
-        // Request animation frames
-        window.requestAnimationFrame(this.main.bind(this));
-        // window.requestAnimationFrame((tframe) => this.main);
-        // Update and render the game
-        this.update(tframe); // 변화할 좌표 계산
-        this.render(); // 실제로 그리기
-    }
-
-    // Update the game state
-    private update(tframe: number) {
-        const dt = (tframe - this.lastframe) / 1000;
-        this.lastframe = tframe;
-
-        // Update the fps counter
-        this.updateFps(dt);
-
-        if (this.gamestate == this.gamestates.ready) {
-            // Game is ready for player input
-
-            // Check for game over
-            if (this.moves.length <= 0) {
-                this.gameover = true;
-            }
-
-            // Let the AI bot make a move, if enabled
-            if (this.aibot) {
-                this.animationtime += dt;
-                if (this.animationtime > this.animationtimetotal) {
-                    // Check if there are moves available
-                    this.findMoves();
-
-                    if (this.moves.length > 0) {
-                         // Get a random valid move
-                        const move: any = this.moves[Math.floor(Math.random() * this.moves.length)];
-
-                        // Simulate a player using the mouse to swap two tiles
-                        this.mouseSwap(move.column1, move.row1, move.column2, move.row2);
-                    } else {
-                         // No moves left, Game Over. We could start a new game.
-                         // newGame();
-                    }
-                    this.animationtime = 0;
-                 }
-             }
-         } else if (this.gamestate == this.gamestates.resolve) {
-            // Game is busy resolving and animating clusters
-            this.animationtime += dt;
-
-            if (this.animationstate == 0) {
-                // Clusters need to be found and removed
-                if (this.animationtime > this.animationtimetotal) {
-                    // Find clusters
-                    this.findClusters();
-
-                    if (this.clusters.length > 0) {
-                        // Add points to the score
-                        for (let i = 0; i < this.clusters.length; i++) {
-                            // Add extra points for longer clusters
-                            this.score += 100 * (this.clusters[i].length - 2);;
-                        }
-
-                        // max score를 업데이트 한다.
-                        this.storage.maxScore = this.score;
-                        this.maxScore = this.storage.maxScore;
-
-                        this.playSound('explode');
-                        // Clusters found, remove them
-                        this.removeClusters();
-
-                        // Tiles need to be shifted
-                        this.animationstate = 1;
-                    } else {
-                        // No clusters found, animation complete
-                        this.gamestate = this.gamestates.ready;
-                    }
-                    this.animationtime = 0;
-                }
-            } else if (this.animationstate == 1) {
-                // Tiles need to be shifted
-                if (this.animationtime > this.animationtimetotal) {
-                    // Shift tiles
-                    this.shiftTiles();
-
-                    // New clusters need to be found
-                    this.animationstate = 0;
-                    this.animationtime = 0;
-
-                    // Check if there are new clusters
-                    this.findClusters();
-                    if (this.clusters.length <= 0) {
-                        // Animation complete
-                        this.gamestate = this.gamestates.ready;
-                    }
-                }
-            } else if (this.animationstate == 2) {
-                // Swapping tiles animation
-                if (this.animationtime > this.animationtimetotal) {
-                    // Swap the tiles
-                    this.swap(this.currentmove.column1, this.currentmove.row1, this.currentmove.column2, this.currentmove.row2);
-
-                    // Check if the swap made a cluster
-                    this.findClusters();
-                    if (this.clusters.length > 0) {
-                        // Valid swap, found one or more clusters
-                        // Prepare animation states
-                        this.animationstate = 0;
-                        this.animationtime = 0;
-                        this.gamestate = this.gamestates.resolve;
-                    } else {
-                        // Invalid swap, Rewind swapping animation
-                        this.animationstate = 3;
-                        this.animationtime = 0;
-                    }
-
-                    // Update moves and clusters
-                    this.findMoves();
-                    this.findClusters();
-                }
-            } else if (this.animationstate == 3) {
-                // Rewind swapping animation
-                if (this.animationtime > this.animationtimetotal) {
-                    // Invalid swap, swap back
-                    this.swap(this.currentmove.column1, this.currentmove.row1, this.currentmove.column2, this.currentmove.row2);
-
-                    // Animation complete
-                    this.gamestate = this.gamestates.ready;
-                 }
-             }
-
-            // Update moves and clusters
-            this.findMoves();
-            this.findClusters();
+    private actGameState(gameStatus: GameStatus) {
+        this.gameStatus = gameStatus;
+        switch (gameStatus) {
+            case 'init':
+                break;
+            case 'ready':
+                this.camera.position.set(1, 1, 5);
+                this.light.position.set(1, 1, 1.3);
+                this.light.intensity = 0.0;
+                this.ballBody.position.set(0, 1, 1);
+                this.createMaze();
+                this.createGround();
+                this.actGameState('fadeIn');
+                break;
+            case 'play':
+                break;
+            case 'fadeIn':
+                break;
+            case 'fadeOut':
+                break;
         }
     }
 
-    private updateFps(dt: number) {
-
-        if (this.fpstime > 0.25) {
-            // Calculate fps
-            // this.fps = Math.round(this.framecount / this.fpstime);
-            Math.round(this.framecount / this.fpstime);
-            // console.log(this.fps);
-
-            // Reset time and framecount
-            this.fpstime = 0;
-            this.framecount = 0;
-        }
-
-        // Increase time and framecount
-        this.fpstime += dt;
-        this.framecount++;
+    private onWindowResize() {
+        this.sceneWidth = this.domContainer.nativeElement.offsetWidth;
+        this.sceneHeight = this.domContainer.nativeElement.offsetHeight;
+        this.renderer.setSize(this.sceneWidth, this.sceneHeight);
+        this.camera.aspect = this.sceneWidth / this.sceneHeight;
+        this.camera.updateProjectionMatrix();
     }
 
-    // Draw text that is centered
-    private drawCenterText(text: string, x: number, y: number, width: number) {
-        const textdim = this.context.measureText(text);
-        this.context.fillText(text, x + (width-textdim.width) / 2, y);
-    }
-
-     // Render the game
-    private render() {
-        // Draw level background
-        const levelwidth = this.level.columns * this.level.tilewidth;
-        const levelheight = this.level.rows * this.level.tileheight;
-        this.context.fillStyle = this.mode[this.template].bgcolor;
-        this.context.fillRect(this.level.x - 4, this.level.y - 4, levelwidth + 8, levelheight + 8);
-
-        // Render tiles
-        this.renderTiles();
-
-        // Render clusters
-        this.renderClusters();
-
-        // Render moves, when there are no clusters
-        if (this.showmoves && this.clusters.length <= 0 && this.gamestate == this.gamestates.ready) {
-            this.renderMoves();
+    private cameraPositinUpdate = () => {
+        const mazeCenter = {x: this.level, y: this.level, z: 0};
+        mazeCenter.z = this.level * 3 + 3; // 1: 6 , 2: 9, 3: 12, 4: 15
+        this.camera.position.x += (mazeCenter.x - this.camera.position.x) * 0.1;
+        this.camera.position.y += (mazeCenter.y - this.camera.position.y) * 0.1;
+        this.camera.position.z += (mazeCenter.z - this.camera.position.z) * 0.1;
+        if (this.fullMode === true) {
+            requestAnimationFrame(this.cameraPositinUpdate); // request next update
         }
-
-        // Game Over overlay
-        if (this.gameover) {
-            this.context.fillStyle = 'rgba(0, 0, 0, 0.8)';
-            this.context.fillRect(this.level.x, this.level.y, levelwidth, levelheight);
-
-            this.context.fillStyle = '#ffffff';
-            this.context.font = '24px Verdana';
-            this.drawCenterText('Game Over!', this.level.x, this.level.y + levelheight / 2 + 10, levelwidth);
+    }
+    public full(bool: boolean) {
+        this.fullMode = bool;
+        if (bool) {
+            // const rand = Math.floor((Math.random() * 3) + 1);
+            // if (rand === 3 && Capacitor.isNativePlatform()) {
+            //     this.admobService.showInterstitial(environment.admob.interstitial);
+            // }
+            // 중심 사이즈 계산
+            this.cameraPositinUpdate();
         }
     }
 
-    // Render tiles
-    private renderTiles() {
-        for (let i = 0; i < this.level.columns; i++) {
-            for (let j = 0; j < this.level.rows; j++) {
-                // Get the shift of the tile for animation
-                const shift = this.level.tiles[i][j].shift;
+    // level 이동 관련
+    public expandLevels() {
+        if (this.levels.length) {
+            this.levels = [];
+        } else {
+            let start = 0; //
+            let end = 0;
+            const overCnt = this.highLevel - this.level;
 
-                // Calculate the tile coordinates
-                const coord = this.getTileCoordinate(i, j, 0, (this.animationtime / this.animationtimetotal) * shift);
+            if (overCnt > 5) {
+                start = this.level;
+                end = this.level + 4;
 
-                // Check if there is a tile present
-                if (this.level.tiles[i][j].type >= 0) {
-                    // Get the color of the tile
-                    // const col = this.tilecolors[this.level.tiles[i][j].type];
-                    // console.log('renderTiles >> col >>', col, this.level.tiles[i][j].type);
-
-                    // Draw the tile using the color
-                    // this.drawTile(coord.tilex, coord.tiley, col[0], col[1], col[2]);
-                    this.drawButtonTile(coord.tilex, coord.tiley, this.level.tiles[i][j].type);
-                }
-
-                // Draw the selected tile
-                // 버튼이 드레그가 아니라 select 이면 현재 타일의 색상을 red로 바꾼다
-                if (this.level.selectedtile.selected) {
-                    if (this.level.selectedtile.column == i && this.level.selectedtile.row == j) {
-                        // Draw a red tile
-                        // this.drawTile(coord.tilex, coord.tiley, 255, 0, 0);
-                    }
-                }
-            }
-        }
-
-        // Render the swap animation
-        if (this.gamestate === this.gamestates.resolve && (this.animationstate === 2 || this.animationstate === 3)) {
-            // Calculate the x and y shift
-            const shiftx = this.currentmove.column2 - this.currentmove.column1;
-            const shifty = this.currentmove.row2 - this.currentmove.row1;
-
-            // First tile
-            const coord1 = this.getTileCoordinate(this.currentmove.column1, this.currentmove.row1, 0, 0);
-            const coord1shift = this.getTileCoordinate(this.currentmove.column1, this.currentmove.row1, (this.animationtime / this.animationtimetotal) * shiftx, (this.animationtime / this.animationtimetotal) * shifty);
-            // const col1 = this.tilecolors[this.level.tiles[this.currentmove.column1][this.currentmove.row1].type];
-
-            // Second tile
-            const coord2 = this.getTileCoordinate(this.currentmove.column2, this.currentmove.row2, 0, 0);
-            const coord2shift = this.getTileCoordinate(this.currentmove.column2, this.currentmove.row2, (this.animationtime / this.animationtimetotal) * -shiftx, (this.animationtime / this.animationtimetotal) * -shifty);
-            // const col2 = this.tilecolors[this.level.tiles[this.currentmove.column2][this.currentmove.row2].type];
-
-            // Draw a black background
-            this.drawTile(coord1.tilex, coord1.tiley, 0, 0, 0);
-            this.drawTile(coord2.tilex, coord2.tiley, 0, 0, 0);
-
-            // Change the order, depending on the animation state
-            if (this.animationstate == 2) {
-                // Draw the tiles
-                // this.drawTile(coord1shift.tilex, coord1shift.tiley, col1[0], col1[1], col1[2]);
-                // this.drawTile(coord2shift.tilex, coord2shift.tiley, col2[0], col2[1], col2[2]);
-                this.drawButtonTile(coord1shift.tilex, coord1shift.tiley, this.level.tiles[this.currentmove.column1][this.currentmove.row1].type);
-                this.drawButtonTile(coord2shift.tilex, coord2shift.tiley, this.level.tiles[this.currentmove.column2][this.currentmove.row2].type);
             } else {
-                // Draw the tiles
-                // this.drawTile(coord2shift.tilex, coord2shift.tiley, col2[0], col2[1], col2[2]);
-                // this.drawTile(coord1shift.tilex, coord1shift.tiley, col1[0], col1[1], col1[2]);
-                this.drawButtonTile(coord2shift.tilex, coord2shift.tiley, this.level.tiles[this.currentmove.column2][this.currentmove.row2].type);
-                this.drawButtonTile(coord1shift.tilex, coord1shift.tiley, this.level.tiles[this.currentmove.column1][this.currentmove.row1].type);
-
+                end = this.highLevel;
+                start = end - 4;
             }
-        }
-    }
-
-    // Get the tile coordinate
-    private getTileCoordinate(column: number, row: number, columnoffset: number, rowoffset: number) {
-        const tilex = this.level.x + (column + columnoffset) * this.level.tilewidth;
-        const tiley = this.level.y + (row + rowoffset) * this.level.tileheight;
-        return { tilex: tilex, tiley: tiley};
-    }
-
-    // Draw a tile with a color
-    private drawTile(x: number, y: number, r: number, g: number, b: number) {
-        this.context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-        this.context.fillRect(x + 2, y + 2, this.level.tilewidth - 4, this.level.tileheight - 4);
-    }
-
-    private drawButtonTile(x: number, y: number, type: number) {
-        // this.context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-        // this.context.fillRect(x + 2, y + 2, this.level.tilewidth - 4, this.level.tileheight - 4);
-        const title = this.tileimages[type];
-        this.context.drawImage(title, 0, 0, title.width, title.height, x + 2,  y + 2, this.level.tilewidth - 4, this.level.tileheight - 4);
-    }
-
-    // Render clusters
-    private renderClusters() {
-        for (let i=0; i < this.clusters.length; i++) {
-            // Calculate the tile coordinates
-            const coord = this.getTileCoordinate(this.clusters[i].column, this.clusters[i].row, 0, 0);
-
-            if (this.clusters[i].horizontal) {
-                // Draw a horizontal line
-                this.context.fillStyle = '#00ff00';
-                this.context.fillRect(coord.tilex + this.level.tilewidth/2, coord.tiley + this.level.tileheight/2 - 4, (this.clusters[i].length - 1) * this.level.tilewidth, 8);
-            } else {
-                // Draw a vertical line
-                this.context.fillStyle = '#0000ff';
-                this.context.fillRect(coord.tilex + this.level.tilewidth/2 - 4, coord.tiley + this.level.tileheight/2, 8, (this.clusters[i].length - 1) * this.level.tileheight);
-            }
-        }
-    }
-
-    // Render moves
-    private renderMoves() {
-        for (let i = 0; i < this.moves.length; i++) {
-            // Calculate coordinates of tile 1 and 2
-            const coord1 = this.getTileCoordinate(this.moves[i].column1, this.moves[i].row1, 0, 0);
-            const coord2 = this.getTileCoordinate(this.moves[i].column2, this.moves[i].row2, 0, 0);
-
-            // Draw a line from tile 1 to tile 2
-            this.context.strokeStyle = '#ff0000';
-            this.context.beginPath();
-            this.context.moveTo(coord1.tilex + this.level.tilewidth/2, coord1.tiley + this.level.tileheight/2);
-            this.context.lineTo(coord2.tilex + this.level.tilewidth/2, coord2.tiley + this.level.tileheight/2);
-            this.context.stroke();
-         }
-     }
-
-    // Start a new game
-    private newGame() {
-        this.soundsEnable = false;
-        // Reset score
-        this.score = 0;
-
-        // Set the gamestate to ready
-        this.gamestate = this.gamestates.ready;
-
-        // Reset game over
-        this.gameover = false;
-
-        // Create the level
-        this.createLevel();
-
-        // Find initial clusters and moves
-        this.findMoves();
-        this.findClusters();
-
-        this.soundsEnable = true;
-     }
-
-    // Create a random level
-    private createLevel() {
-        let done = false;
-
-        // Keep generating levels until it is correct
-        while (!done) {
-
-            // Create a level with random tiles
-            for (let i = 0; i < this.level.columns; i++) {
-                for (let j = 0; j < this.level.rows; j++) {
-                    this.level.tiles[i][j].type = this.getRandomTile();
-                }
+            for (let i = start; i <= end  ; i++) {
+                this.levels.push(i);
             }
 
-            // Resolve the clusters
-            this.resolveClusters();
-
-            // Check if there are valid moves
-            this.findMoves();
-
-            // Done when there is a valid move
-            if (this.moves.length > 0) {
-                done = true;
-            }
+            // 현재 레벨을 기준으로 좌측으로 5개의 레베을 디스플레이 한다. (최대 5개)
+            // 최대에서 현재 레벨까지 카운트 다운
+            // 최대에서 현재까지 카운트 다운중 5개가 넘어면 최대부터 학제
+            // 최대에서 현재까지 카운트 다운중 5개가 안되면 아래로도 포함
+            // for (let i = this.highLevel; i > 0  ; i--) {
+            //     if (this.levels.length === 5) {
+            //         this.levels.push(i);
+            //     } else {
+            //         this.levels.push(i);
+            //     }
+            //
+            //
+            //
+            // }
         }
     }
-
-    // Get a random tile
-    private getRandomTile() {
-        return Math.floor(Math.random() * this.tilecolors.length);
+    public gotoLevel(level: number) {
+        this.levels = [];
+        this.level = level;
+        this.actGameState('ready');
+        this.showInterstitial();
     }
-
-    // Remove clusters and insert tiles
-    private resolveClusters() {
-        // Check for clusters
-        this.findClusters();
-        // While there are clusters left
-        while (this.clusters.length > 0) {
-
-            // Remove clusters
-            this.removeClusters();
-
-            // Shift tiles
-            this.shiftTiles();
-
-            // Check if there are clusters left
-            this.findClusters();
-        }
-    }
-
 
     /**
-     * Find clusters in the level
-     * 매치되는 블록이 있으면 this.clusters 에 넣어 둔다.
-     */
-    private findClusters() {
-        // Reset clusters
-        this.clusters = []
-
-        // Find horizontal clusters
-        for (let j = 0;  j < this.level.rows; j++) {
-            // Start with a single tile, cluster of 1
-            let matchlength = 1;
-            for (let i=0; i < this.level.columns; i++) {
-                let checkcluster = false;
-
-                if (i == this.level.columns-1) {
-                    // Last tile
-                    checkcluster = true;
-                } else {
-                    // Check the type of the next tile
-                    if (this.level.tiles[i][j].type == this.level.tiles[i+1][j].type &&
-                        this.level.tiles[i][j].type != -1) {
-                        // Same type as the previous tile, increase matchlength
-                        matchlength += 1;
-                    } else {
-                        // Different type
-                        checkcluster = true;
-                    }
-                }
-
-                // Check if there was a cluster
-                if (checkcluster) {
-                    if (matchlength >= 3) {
-                        // Found a horizontal cluster
-                        this.clusters.push({ column: i+1-matchlength, row:j,
-                                        length: matchlength, horizontal: true });
-                    }
-
-                    matchlength = 1;
-                }
-            }
-        }
-
-        // Find vertical clusters
-        for (let i = 0; i < this.level.columns; i++) {
-            // Start with a single tile, cluster of 1
-            let matchlength = 1;
-            for (let j = 0; j < this.level.rows; j++) {
-                let checkcluster = false;
-
-                if (j === this.level.rows-1) {
-                    // Last tile
-                    checkcluster = true;
-                } else {
-                    // Check the type of the next tile
-                    if (this.level.tiles[i][j].type == this.level.tiles[i][j+1].type &&
-                        this.level.tiles[i][j].type != -1) {
-                        // Same type as the previous tile, increase matchlength
-                        matchlength += 1;
-                    } else {
-                        // Different type
-                        checkcluster = true;
-                    }
-                }
-
-                // Check if there was a cluster
-                if (checkcluster) {
-                    if (matchlength >= 3) {
-                        // Found a vertical cluster
-                        this.clusters.push({
-                            column: i,
-                            row: j + 1 - matchlength,
-                            length: matchlength,
-                            horizontal: false
-                        });
-                    }
-
-                    matchlength = 1;
-                }
-            }
-        }
-    }
-
-    // Find available moves
-    private findMoves() {
-        // Reset moves
-        this.moves = []
-
-         // Check horizontal swaps
-        for (let j = 0; j < this.level.rows; j++) {
-            for (let i = 0; i< this.level.columns-1; i++) {
-                // Swap, find clusters and swap back
-                this.swap(i, j, i+1, j);
-                this.findClusters();
-                this.swap(i, j, i+1, j);
-
-                // Check if the swap made a cluster
-                if (this.clusters.length > 0) {
-                    // Found a move
-                    this.moves.push({column1: i, row1: j, column2: i+1, row2: j});
-                }
-            }
-        }
-
-        // Check vertical swaps
-        for (let i = 0;  i < this.level.columns; i++) {
-            for (let j=0; j < this.level.rows-1; j++) {
-                // Swap, find clusters and swap back
-                this.swap(i, j, i, j+1);
-                this.findClusters();
-                this.swap(i, j, i, j+1);
-
-                // Check if the swap made a cluster
-                if (this.clusters.length > 0) {
-                    // Found a move
-                    this.moves.push({column1: i, row1: j, column2: i, row2: j+1});
-                }
-            }
-        }
-
-        // Reset clusters
-        this.clusters = []
-    }
-
-    // Loop over the cluster tiles and execute a function
-    private loopClusters(func: (i: number, column: number, row: number, cluster: any) => void) {
-        for (let i = 0; i < this.clusters.length; i++) {
-            //  { column, row, length, horizontal }
-            const cluster: any = this.clusters[i];
-            let coffset = 0;
-            let roffset = 0;
-            for (let j = 0; j < cluster.length; j++) {
-                func(i, cluster.column + coffset, cluster.row + roffset, cluster);
-
-                if (cluster.horizontal) {
-                    coffset++;
-                } else {
-                    roffset++;
-                }
-            }
-        }
-    }
-
-    // Remove the clusters
-    private removeClusters() {
-        // Change the type of the tiles to -1, indicating a removed tile
-        this.loopClusters((index, column, row, cluster) => {
-            this.level.tiles[column][row].type = -1;
-        });
-
-        // Calculate how much a tile should be shifted downwards
-        for (let i = 0; i < this.level.columns; i++) {
-            let shift = 0;
-            for (let j = this.level.rows-1; j >= 0; j--) {
-                // Loop from bottom to top
-                if (this.level.tiles[i][j].type == -1) {
-                    // Tile is removed, increase shift
-                    shift++;
-                    this.level.tiles[i][j].shift = 0;
-                } else {
-                    // Set the shift
-                    this.level.tiles[i][j].shift = shift;
-                }
-            }
-        }
-    }
-
-    // Shift tiles and insert new tiles
-    private shiftTiles() {
-        // Shift tiles
-        for (let i = 0; i < this.level.columns; i++) {
-             for (let j = this.level.rows-1; j >= 0; j--) {
-                // Loop from bottom to top
-                if (this.level.tiles[i][j].type == -1) {
-                    // Insert new random tile
-                    this.level.tiles[i][j].type = this.getRandomTile();
-                } else {
-                    // Swap tile to shift it
-                    const shift = this.level.tiles[i][j].shift;
-                    if (shift > 0) {
-                        this.swap(i, j, i, j+shift)
-                    }
-                }
-
-                // Reset shift
-                this.level.tiles[i][j].shift = 0;
-            }
-        }
-    }
-
-    /*
-     * Get the tile under the mouse
-     *@param Object pos : {x, y}
-     */
-    private getMouseTile(pos: any) {
-        // Calculate the index of the tile
-        const tx = Math.floor((pos.x - this.level.x) / this.level.tilewidth);
-        const ty = Math.floor((pos.y - this.level.y) / this.level.tileheight);
-
-        // Check if the tile is valid
-        if (tx >= 0 && tx < this.level.columns && ty >= 0 && ty < this.level.rows) {
-            // Tile is valid
-            return {
-                valid: true,
-                x: tx,
-                y: ty
-            };
-        }
-
-        // No valid tile
-        return {
-            valid: false,
-            x: 0,
-            y: 0
-        };
-    }
-
-    // Check if two tiles can be swapped
-    private canSwap(x1: number, y1: number, x2: number, y2: number) {
-        // Check if the tile is a direct neighbor of the selected tile
-        if ((Math.abs(x1 - x2) == 1 && y1 == y2) ||
-            (Math.abs(y1 - y2) == 1 && x1 == x2)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    // Swap two tiles in the level
-    private swap(x1: number, y1: number, x2: number, y2: number) {
-        const typeswap = this.level.tiles[x1][y1].type;
-        this.level.tiles[x1][y1].type = this.level.tiles[x2][y2].type;
-        this.level.tiles[x2][y2].type = typeswap;
-    }
-
-    // Swap two tiles as a player action
-    private mouseSwap(c1: number, r1: number, c2: number, r2: number) {
-        // Save the current move
-        this.currentmove = {column1: c1, row1: r1, column2: c2, row2: r2};
-
-        // Deselect
-        this.level.selectedtile.selected = false;
-
-        // Start animation
-        this.animationstate = 2;
-        this.animationtime = 0;
-        this.gamestate = this.gamestates.resolve;
-     }
-
-    // On mouse movement
-    public onMouseMove(e: any) {
-        this.dragging({clientX: e.clientX,  clientY: e.clientY});
-    }
-    public onTouchMove(e: any) {
-        this.dragging({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
-    }
-
-    private dragging(e: any) {
-        // Get the mouse position
-        const pos = this.getMousePos(this.canvas, {clientX: e.clientX,  clientY: e.clientY});
-
-        // Check if we are dragging with a tile selected
-        if (this.drag && this.level.selectedtile.selected) {
-            // Get the tile under the mouse
-            const mt = this.getMouseTile(pos);
-            if (mt.valid) {
-                // Valid tile
-
-                // Check if the tiles can be swapped
-                if (this.canSwap(mt.x, mt.y, this.level.selectedtile.column, this.level.selectedtile.row)){
-                    // Swap the tiles
-                    this.mouseSwap(mt.x, mt.y, this.level.selectedtile.column, this.level.selectedtile.row);
-                }
-            }
-        }
-    }
-    // On mouse button click
-    public onMouseDown(e: any) {
-        this.pressed({clientX: e.clientX,  clientY: e.clientY});
-    }
-    public onTouchStart(e: any) {
-        this.pressed({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
-    }
-
-
-    private pressed(e: any) {
-        // Get the mouse position
-        const pos = this.getMousePos(this.canvas, {clientX: e.clientX,  clientY: e.clientY});
-        // Start dragging
-        if (!this.drag) {
-            // Get the tile under the mouse
-            const mt = this.getMouseTile(pos);
-            if (mt.valid) {
-                // Valid tile
-                let swapped = false;
-                if (this.level.selectedtile.selected) {
-                    if (mt.x === this.level.selectedtile.column && mt.y === this.level.selectedtile.row) {
-                        // Same tile selected, deselect
-                        this.level.selectedtile.selected = false;
-                        this.drag = true;
-                        return;
-                    } else if (this.canSwap(mt.x, mt.y, this.level.selectedtile.column, this.level.selectedtile.row)){
-                        // Tiles can be swapped, swap the tiles
-                        this.mouseSwap(mt.x, mt.y, this.level.selectedtile.column, this.level.selectedtile.row);
-                        swapped = true;
-                    }
-                }
-
-                if (!swapped) {
-                    // Set the new selected tile
-                    this.level.selectedtile.column = mt.x;
-                    this.level.selectedtile.row = mt.y;
-                    this.level.selectedtile.selected = true;
-                }
-            } else {
-                // Invalid tile
-                this.level.selectedtile.selected = false;
-            }
-
-            // Start dragging
-            this.drag = true;
-        }
-    }
-
-    public onMouseUp() {
-        this.drag = false;
-    }
-
-    public onTouchEnd() {
-        this.drag = false;
-    }
-
-    public onMouseOut() {
-        // Reset dragging
-        this.drag = false;
-    }
-
-     // Get the mouse position
-    private getMousePos(canvas: any, e: any) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: Math.round((e.clientX - rect.left) / (rect.right - rect.left) * canvas.width),
-            y: Math.round((e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height)
-        };
-    }
-
-    public onClickButton(act: string) {
-        switch (act) {
-            case 'new':
-                this.newGame();
-                break;
-            case 'hint':
-                this.showmoves = !this.showmoves;
-                if (this.showmoves) {
-                    setTimeout(()=>{this.showmoves = false}, 1000);
+    *@param String flag prev | next
+    */
+    public levelSection(flag: string) {
+        switch(flag) {
+            case 'prev':
+                if (this.levels[0] !== 1) {
+                    this.levels.unshift(this.levels[0] - 1);
+                    this.levels.pop();
                 }
                 break;
-            case 'ai':
-                this.aibot = !this.aibot;
+            case 'next':
+                if (this.levels[this.levels.length -1] !== this.highLevel) {
+                    this.levels.push(this.levels[this.levels.length -1] + 1);
+                    this.levels.shift();
+                }
                 break;
         }
     }
 
-
-    //
-    onResize(event: any) {
-        // event.target.innerWidth;
-        this.resizeCanvas();
-    }
-
-    private playSound(sound: string) {
-        console.log('playSound')
-        if (this.soundsEnable) { // 초기 사운드를 제거하기 위해 처리
-
-            // if (!this.sounds.explode) {
-            //     console.log('this.sounds.explode', this.sounds.explode)
-            //     this.sounds[sound] = new Howl({
-            //       src: ['/assets/sounds/explode.mp3'],
-            //       preload: true,
-            //     });
-            // }
-
-            if (this.configSvc.sound) {
-                this.sounds[sound].play();
-            }
+    private showInterstitial() {
+        console.log('showInterstitial');
+        const rand = Math.floor((Math.random() * 3) + 1);
+        console.log(rand);
+        if (rand === 3 && Capacitor.isNativePlatform()) {
+            this.admobService.showInterstitial(environment.admob.interstitial);
         }
     }
-
-
 }

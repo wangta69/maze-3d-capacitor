@@ -1,34 +1,45 @@
 {
   "game": {
-    "column": "Column",
-    "goodjob": "Good Job!!",
-    "resume": "Continue",
-    "row": "Row",
-    "start": "Start"
+    "callisto": "callisto",
+    "deimos": "deimos",
+    "earth": "earth",
+    "europa": "europa",
+    "ganymede": "ganymede",
+    "hyperion": "hyperion",
+    "iapetus": "iapetus",
+    "info": {
+      "density": "density",
+      "diameter": "diameter",
+      "distance": "distance",
+      "gravity": "gravity",
+      "mass": "mass",
+      "radius": "radius",
+      "revolution": "revolution",
+      "rotation": "rotation",
+      "satellites": "satellites"
+    },
+    "io": "io",
+    "jupiter": "jupiter",
+    "mars": "mars",
+    "mercury": "mercury",
+    "moon": "moon",
+    "neptune": "neptune",
+    "phobos": "phobos",
+    "rhea": "rhea",
+    "saturn": "saturn",
+    "sun": "sun",
+    "titan": "titan",
+    "triton": "triton",
+    "uranus": "uranus",
+    "venus": "venus"
   },
-  "btn": {
-      "cancel": "Cancel",
-      "confirm": "Confirm"
-  },
-  "modals": {
-      "clean-all": {
-          "title": "Clean All",
-          "subTitle": "The marked area is initialized."
-       }
-  },
-  "home": {
-    "inggame": "Continue",
-    "newgame": "New Game"
-  },
-  "localpushmessage": "Make your brain brilliant today.",
+  "localpushmessage": "Have nice and good luck to you",
   "setting": {
     "close": "Close",
     "language": "Languages",
     "privacy-policy": "Privacy Policy",
-    "rate": "App Rating",
+    "rate": "App. Rating",
     "setting": "Setting",
-    "sound": "Sound",
-    "version": "version",
-    "vibration": "vibration"
+    "sound": "Sound"
   }
 }

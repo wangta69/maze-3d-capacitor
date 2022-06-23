@@ -1,0 +1,22 @@
+<div id="wrapper">
+    <app-header></app-header>
+    <div class="container">
+        <div class="dashboard">
+            <div>
+                <div class="level">
+                    <span class="selected" (click)="expandLevels()">{{level}}</span>
+                    <div class="paging" *ngIf="levels.length">
+                        <span (click)="levelSection('prev')"> &#8249; </span>
+                        <span *ngFor="let level of levels" (click)="gotoLevel(level)">{{level}}</span>
+                        <span (click)="levelSection('next')"> &#8250; </span>
+                    </div>
+                </div>
+                <div class="hint">
+                    <span (click)="full(true)">full map</span>
+                </div>
+            </div>
+        </div>
+        <div #domContainer class="domContainer" (click)="setClick($event)"></div>
+    </div>
+</div>
+

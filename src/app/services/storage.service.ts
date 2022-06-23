@@ -4,7 +4,7 @@ import { Storage } from './services/storage.service';
 */
 export class Storage {
     public data: any;
-    private storageName = 'game.match3.data';
+    private storageName = 'game.maze3d.data';
 
     constructor()
     {
@@ -18,7 +18,8 @@ export class Storage {
 
     private resetData() {
         this.data = {
-            maxScore: 0,
+            level: 1,
+            highLevel: 1
         };
         this.save();
     }
@@ -36,14 +37,23 @@ export class Storage {
 
     }
 
-    set maxScore(score: number) {
-        if (this.data.maxScore < score) {
-            this.data.maxScore = score;
+    set level(level: number) {
+            this.data.level = level;
+            this.save();
+    }
+
+    get level() {
+        return this.data.level;
+    }
+
+    set highLevel(level: number) {
+        if (this.data.highLevel < level) {
+            this.data.highLevel = level;
             this.save();
         }
     }
 
-    get maxScore() {
-        return this.data.maxScore;
+    get highLevel() {
+        return this.data.highLevel;
     }
 }

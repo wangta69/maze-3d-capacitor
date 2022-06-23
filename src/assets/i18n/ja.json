@@ -1,21 +1,45 @@
 {
   "game": {
-    "column": "カラム",
-    "goodjob": "よくやった!!",
-    "resume": "履歴書",
-    "row": "行",
-    "start": "開始"
+    "callisto": "カリスト",
+    "deimos": "デイモス",
+    "earth": "地球",
+    "europa": "ヨーロッパ",
+    "ganymede": "ガニメデ",
+    "hyperion": "ハイペリオン",
+    "iapetus": "イアペトゥス",
+    "info": {
+      "density": "密度",
+      "diameter": "直径",
+      "distance": "距離",
+      "gravity": "重力",
+      "mass": "質量",
+      "radius": "半径",
+      "revolution": "革命",
+      "rotation": "回転",
+      "satellites": "衛星"
+    },
+    "io": "io",
+    "jupiter": "木星",
+    "mars": "火星",
+    "mercury": "水星",
+    "moon": "月",
+    "neptune": "ネプチューン",
+    "phobos": "フォボス",
+    "rhea": "レア",
+    "saturn": "土星",
+    "sun": "太陽",
+    "titan": "タイタン",
+    "triton": "トリトン",
+    "uranus": "天王星",
+    "venus": "金星"
   },
-  "home": {
-    "inggame": "進行中のゲーム",
-    "newgame": "新しいゲーム"
-  },
-  "localpushmessage": "今日あなたの脳を明晰に。",
+  "localpushmessage": "幸運を祈ります",
   "setting": {
     "close": "閉じる",
-    "language": "閉じる",
+    "language": "言語",
     "privacy-policy": "個人情報保護方針",
-    "setting": "設定",
+    "rate": "アプリ 格付け",
+    "setting": "セッティング",
     "sound": "音"
   }
 }

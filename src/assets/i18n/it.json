@@ -1,21 +1,45 @@
 {
   "game": {
-    "column": "Colonna",
-    "goodjob": "Buon lavoro!!",
-    "resume": "Curriculum vitae",
-    "row": "Riga",
-    "start": "Inizio"
+    "callisto": "Callisto",
+    "deimos": "Deimos",
+    "earth": "terra",
+    "europa": "europa",
+    "ganymede": "Ganimede",
+    "hyperion": "hyperion",
+    "iapetus": "Giapeto",
+    "info": {
+      "density": "densità",
+      "diameter": "diametro",
+      "distance": "distanza",
+      "gravity": "gravità",
+      "mass": "massa",
+      "radius": "raggio",
+      "revolution": "rivoluzione",
+      "rotation": "rotazione",
+      "satellites": "satelliti"
+    },
+    "io": "io",
+    "jupiter": "Giove",
+    "mars": "Marte",
+    "mercury": "mercurio",
+    "moon": "Luna",
+    "neptune": "Nettuno",
+    "phobos": "Phobos",
+    "rhea": "rhea",
+    "saturn": "Saturno",
+    "sun": "sole",
+    "titan": "titano",
+    "triton": "tritone",
+    "uranus": "Urano",
+    "venus": "Venere"
   },
-  "home": {
-    "inggame": "Gioco in corso",
-    "newgame": "Nuovo gioco"
-  },
-  "localpushmessage": "Rendi brillante il tuo cervello oggi.",
+  "localpushmessage": "Buona e buona fortuna a te",
   "setting": {
-    "close": "Chiudi",
-    "language": "Chiudi",
-    "privacy-policy": "Informativa sulla privacy",
-    "setting": "Setting",
+    "close": "Vicina",
+    "language": "Le lingue",
+    "privacy-policy": "politica sulla riservatezza",
+    "rate": "App. Valutazione",
+    "setting": "Ambientazione",
     "sound": "Suono"
   }
 }
