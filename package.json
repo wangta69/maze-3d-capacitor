@@ -1,5 +1,5 @@
 {
-  "name": "game-match-3",
+  "name": "3d-maze-puzzle",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -22,6 +22,7 @@
     "@angular/router": "~13.1.0",
     "@capacitor-community/admob": "^3.2.0",
     "@capacitor-community/keep-awake": "^2.1.1",
+    "@capacitor-community/native-market": "github:hermitdemschoenenleben/native-market",
     "@capacitor/android": "^3.4.3",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/app": "^1.1.1",

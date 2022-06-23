@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "칼리스토",
-    "deimos": "데이모스",
-    "earth": "지구",
-    "europa": "유로파",
-    "ganymede": "가니메데",
-    "hyperion": "히페리온",
-    "iapetus": "이아페투스",
-    "info": {
-      "density": "밀도",
-      "diameter": "직경",
-      "distance": "거리",
-      "gravity": "중력",
-      "mass": "질량",
-      "radius": "반경",
-      "revolution": "공전주기",
-      "rotation": "자전",
-      "satellites": "위성수"
-    },
-    "io": "io",
-    "jupiter": "목성",
-    "mars": "화성",
-    "mercury": "수성",
-    "moon": "달",
-    "neptune": "해왕성",
-    "phobos": "포보스",
-    "rhea": "레아",
-    "saturn": "토성",
-    "sun": "태양",
-    "titan": "타이탄",
-    "triton": "트리톤",
-    "uranus": "천왕성",
-    "venus": "금성"
   },
-  "localpushmessage": "당신에게 좋은 행운을 빕니다",
+  "localpushmessage": "오늘도 힘내시고 멋진하루 되세요",
   "setting": {
-    "close": "닫기",
-    "language": "언어",
-    "privacy-policy": "개인정보보호정책",
-    "rate": "앱. 평가",
-    "setting": "환경",
-    "sound": "소리"
+      "close": "닫기",
+        "language": "언어",
+        "privacy-policy": "개인 정보 보호 정책",
+        "rate": "앱평가",
+        "setting": "설정",
+        "sound": "소리",
+        "bgmsound": "BGM 사운드",
+        "effectsound": "효과음",
+        "version": "버전",
+        "vibration": "진동"
   }
 }

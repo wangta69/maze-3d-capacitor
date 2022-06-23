@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "卡利斯托",
-    "deimos": "德莫斯",
-    "earth": "地球",
-    "europa": "欧罗巴",
-    "ganymede": "加尼米德",
-    "hyperion": "超离子",
-    "iapetus": "iapetus",
-    "info": {
-      "density": "密度",
-      "diameter": "直径",
-      "distance": "距离",
-      "gravity": "重力",
-      "mass": "质量",
-      "radius": "半径",
-      "revolution": "革命",
-      "rotation": "回转",
-      "satellites": "卫星"
-    },
-    "io": "io",
-    "jupiter": "木星",
-    "mars": "火星",
-    "mercury": "汞",
-    "moon": "月亮",
-    "neptune": "海王星",
-    "phobos": "恐惧症",
-    "rhea": "丽亚",
-    "saturn": "土星",
-    "sun": "太阳",
-    "titan": "泰坦",
-    "triton": "特里顿",
-    "uranus": "天王星",
-    "venus": "金星"
   },
   "localpushmessage": "祝你好运",
   "setting": {
-    "close": "关",
-    "language": "语言能力",
-    "privacy-policy": "隐私政策",
-    "rate": "应用程式 评分",
-    "setting": "设置",
-    "sound": "声音"
+      "bgmsound": "BGM 声音",
+        "close": "关闭",
+        "effectsound": "效果声音",
+        "language": "语言",
+        "privacy-policy": "隐私政策",
+        "rate": "应用评分",
+        "setting": "设置",
+        "sound": "声音",
+        "version": "版本",
+        "vibration": "振动"
   }
 }

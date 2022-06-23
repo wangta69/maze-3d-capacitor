@@ -1,45 +1,18 @@
 {
   "game": {
-    "callisto": "callisto",
-    "deimos": "deimos",
-    "earth": "earth",
-    "europa": "europa",
-    "ganymede": "ganymede",
-    "hyperion": "hyperion",
-    "iapetus": "iapetus",
-    "info": {
-      "density": "density",
-      "diameter": "diameter",
-      "distance": "distance",
-      "gravity": "gravity",
-      "mass": "mass",
-      "radius": "radius",
-      "revolution": "revolution",
-      "rotation": "rotation",
-      "satellites": "satellites"
-    },
-    "io": "io",
-    "jupiter": "jupiter",
-    "mars": "mars",
-    "mercury": "mercury",
-    "moon": "moon",
-    "neptune": "neptune",
-    "phobos": "phobos",
-    "rhea": "rhea",
-    "saturn": "saturn",
-    "sun": "sun",
-    "titan": "titan",
-    "triton": "triton",
-    "uranus": "uranus",
-    "venus": "venus"
+
   },
-  "localpushmessage": "Have nice and good luck to you",
+  "localpushmessage": "Have nice day and good luck to you",
   "setting": {
-    "close": "Close",
-    "language": "Languages",
-    "privacy-policy": "Privacy Policy",
-    "rate": "App. Rating",
-    "setting": "Setting",
-    "sound": "Sound"
+      "close": "Close",
+        "language": "Languages",
+        "privacy-policy": "Privacy Policy",
+        "rate": "App Rating",
+        "setting": "Setting",
+        "sound": "Sound",
+        "bgmsound": "BGM Sound",
+        "effectsound": "Effect Sound",
+        "version": "version",
+        "vibration": "vibration"
   }
 }

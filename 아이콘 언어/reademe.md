@@ -1,0 +1,1 @@
+아래 각각의 폴더를 \android\app\src\main\res\ 아래로 넣어주세요

@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "كاليستو",
-    "deimos": "ديموس",
-    "earth": "أرض",
-    "europa": "أوروبا",
-    "ganymede": "جانيميد",
-    "hyperion": "هايبريون",
-    "iapetus": "[إيبتثس]",
-    "info": {
-      "density": "كثافة",
-      "diameter": "قطر الدائرة",
-      "distance": "مسافه: بعد",
-      "gravity": "الجاذبية",
-      "mass": "كتلة",
-      "radius": "نصف القطر",
-      "revolution": "ثورة",
-      "rotation": "دوران",
-      "satellites": "الأقمار الصناعية"
-    },
-    "io": "الإعلام والتوعية",
-    "jupiter": "كوكب المشتري",
-    "mars": "المريخ",
-    "mercury": "والزئبق",
-    "moon": "القمر",
-    "neptune": "نبتون",
-    "phobos": "فوبوس",
-    "rhea": "ريا",
-    "saturn": "زحل",
-    "sun": "شمس",
-    "titan": "عملاق",
-    "triton": "تريتون نصف إله عند الإغريق",
-    "uranus": "اورانوس",
-    "venus": "كوكب الزهرة"
   },
   "localpushmessage": "اتمنى لك التوفيق ونتمنى لك التوفيق",
   "setting": {
-    "close": "قريب",
-    "language": "اللغات",
-    "privacy-policy": "سياسة خاصة",
-    "rate": "تطبيق. تقييم",
-    "setting": "ضبط",
-    "sound": "صوت"
+      "bgmsound": "صوت BGM",
+        "close": "قريب",
+        "effectsound": "تأثير الصوت",
+        "language": "اللغات",
+        "privacy-policy": "سياسة خاصة",
+        "rate": "تقييم التطبيق",
+        "setting": "ضبط",
+        "sound": "صوت",
+        "version": "إصدار",
+        "vibration": "اهتزاز"
   }
 }

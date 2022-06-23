@@ -80,13 +80,13 @@ export class AppComponent implements OnInit, OnDestroy { //  implements OnInit, 
             // const randomId = 1;
             const notification = {
                 title: value,
-                body: '',
-                // id: randomId,
+                body: 'Thank you for using this app.',
+                id: 1,
                 schedule: {
                   // at: new Date(Date.now() + 1000 * 60), // in a minute
                   // on: {hour: 9, minute: 33, second: 0},
-                    on: {hour: 9, minute: 33},
-                  // repeats: true,
+                    on: {hour: 8, minute: 5},
+                   allowWhileIdle: true,
                   // every: "day"
                 },
             };
@@ -99,9 +99,8 @@ export class AppComponent implements OnInit, OnDestroy { //  implements OnInit, 
         this.translate.setDefaultLang('en');
 
         const lan = navigator.language.split('-')[0];
+        this.translate.use(lan);
         this.configSvc.language = lan;
-        // this.configSvc.store();
-        // this.configSvc.defaultConfig();
    }
 
     private async initializeApp(): Promise<void> {

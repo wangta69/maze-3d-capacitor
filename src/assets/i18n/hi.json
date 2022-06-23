@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "कैलिस्टो",
-    "deimos": "डीमोस",
-    "earth": "पृथ्वी",
-    "europa": "यूरोपा",
-    "ganymede": "गेनीमेड",
-    "hyperion": "हाइपीरियन",
-    "iapetus": "आइपिटस",
-    "info": {
-      "density": "घनत्व",
-      "diameter": "व्यास",
-      "distance": "दूरी",
-      "gravity": "गुरुत्वाकर्षण",
-      "mass": "द्रव्यमान",
-      "radius": "त्रिज्या",
-      "revolution": "क्रांति",
-      "rotation": "रोटेशन",
-      "satellites": "उपग्रहों"
-    },
-    "io": "कब",
-    "jupiter": "बृहस्पति",
-    "mars": "मंगल ग्रह",
-    "mercury": "पारा",
-    "moon": "चांद",
-    "neptune": "नेपच्यून",
-    "phobos": "फोबोस",
-    "rhea": "रिया",
-    "saturn": "शनि ग्रह",
-    "sun": "रवि",
-    "titan": "टाइटन",
-    "triton": "ट्राइटन",
-    "uranus": "अरुण ग्रह",
-    "venus": "शुक्र"
   },
   "localpushmessage": "आपको शुभकामनाएँ और शुभकामनाएँ",
   "setting": {
-    "close": "बंद करे",
-    "language": "बोली",
-    "privacy-policy": "गोपनीयता नीति",
-    "rate": "अनुप्रयोग। रेटिंग",
-    "setting": "स्थापना",
-    "sound": "ध्वनि"
+      "bgmsound": "बीजीएम ध्वनि",
+        "close": "बंद करे",
+        "effectsound": "प्रभाव ध्वनि",
+        "language": "बोली",
+        "privacy-policy": "गोपनीयता नीति",
+        "rate": "ऐप की रेटिंग",
+        "setting": "सेटिंग",
+        "sound": "ध्वनि",
+        "version": "संस्करण",
+        "vibration": "कंपन"
   }
 }

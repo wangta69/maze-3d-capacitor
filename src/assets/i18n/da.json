@@ -1,45 +1,18 @@
 {
   "game": {
-    "callisto": "Callisto",
-    "deimos": "Deimos",
-    "earth": "jorden",
-    "europa": "europa",
-    "ganymede": "Ganymede",
-    "hyperion": "Hyperion",
-    "iapetus": "Iapetus",
-    "info": {
-      "density": "massefylde",
-      "diameter": "diameter",
-      "distance": "afstand",
-      "gravity": "tyngdekraft",
-      "mass": "masse",
-      "radius": "radius",
-      "revolution": "revolution",
-      "rotation": "rotation",
-      "satellites": "satellitter"
-    },
-    "io": "io",
-    "jupiter": "jupiter",
-    "mars": "mars",
-    "mercury": "kviksølv",
-    "moon": "måne",
-    "neptune": "neptun",
-    "phobos": "Phobos",
-    "rhea": "rhea",
-    "saturn": "saturn",
-    "sun": "sol",
-    "titan": "titan",
-    "triton": "triton",
-    "uranus": "uranus",
-    "venus": "Venus"
+
   },
   "localpushmessage": "Ha det rart og held og lykke til dig",
   "setting": {
-    "close": "Tæt",
-    "language": "Sprog",
-    "privacy-policy": "Fortrolighedspolitik",
-    "rate": "App. Bedømmelse",
-    "setting": "Indstilling",
-    "sound": "Lyd"
+      "bgmsound": "BGM-lyd",
+        "close": "Luk",
+        "effectsound": "Effektlyd",
+        "language": "Sprog",
+        "privacy-policy": "Privatlivspolitik",
+        "rate": "App-bedømmelse",
+        "setting": "Indstilling",
+        "sound": "Lyd",
+        "version": "version",
+        "vibration": "vibration"
   }
 }

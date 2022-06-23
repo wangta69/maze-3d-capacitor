@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "calisto",
-    "deimos": "deimos",
-    "earth": "tierra",
-    "europa": "europa",
-    "ganymede": "ganímedes",
-    "hyperion": "hiperion",
-    "iapetus": "iapetus",
-    "info": {
-      "density": "densidad",
-      "diameter": "diámetro",
-      "distance": "distancia",
-      "gravity": "gravedad",
-      "mass": "masa",
-      "radius": "radio",
-      "revolution": "revolución",
-      "rotation": "rotación",
-      "satellites": "satélites"
-    },
-    "io": "io",
-    "jupiter": "Júpiter",
-    "mars": "Marte",
-    "mercury": "mercurio",
-    "moon": "Luna",
-    "neptune": "Neptuno",
-    "phobos": "fobos",
-    "rhea": "ñandú",
-    "saturn": "Saturno",
-    "sun": "Dom",
-    "titan": "titán",
-    "triton": "tritón",
-    "uranus": "Urano",
-    "venus": "Venus"
   },
   "localpushmessage": "Que tengas buena y buena suerte",
   "setting": {
-    "close": "Cerrar",
-    "language": "Idiomas",
-    "privacy-policy": "Política de privacidad",
-    "rate": "App. Clasificación",
-    "setting": "Ajuste",
-    "sound": "Sonido"
+      "bgmsound": "Sonido de música de fondo",
+        "close": "cerca",
+        "effectsound": "Efecto de sonido",
+        "language": "idiomas",
+        "privacy-policy": "Política de privacidad",
+        "rate": "Abrir la aplicación",
+        "setting": "ajuste",
+        "sound": "sonido",
+        "version": "versión",
+        "vibration": "vibración"
   }
 }

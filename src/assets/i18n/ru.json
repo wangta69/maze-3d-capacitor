@@ -1,45 +1,17 @@
 {
   "game": {
-    "callisto": "Callisto",
-    "deimos": "Деймос",
-    "earth": "земной шар",
-    "europa": "европа",
-    "ganymede": "Ганимед",
-    "hyperion": "гиперион",
-    "iapetus": "Япет",
-    "info": {
-      "density": "плотность",
-      "diameter": "диаметр",
-      "distance": "расстояние",
-      "gravity": "сила тяжести",
-      "mass": "масса",
-      "radius": "радиус",
-      "revolution": "вращение",
-      "rotation": "вращение",
-      "satellites": "спутники"
-    },
-    "io": "И.О.",
-    "jupiter": "Юпитер",
-    "mars": "Марс",
-    "mercury": "Меркурий",
-    "moon": "Луна",
-    "neptune": "Нептун",
-    "phobos": "Phobos",
-    "rhea": "Рея",
-    "saturn": "Сатурн",
-    "sun": "солнце",
-    "titan": "исполин",
-    "triton": "тритон",
-    "uranus": "Уран",
-    "venus": "Венера"
   },
   "localpushmessage": "Удачи вам и удачи",
   "setting": {
-    "close": "близко",
-    "language": "Языки",
-    "privacy-policy": "политика конфиденциальности",
-    "rate": "Приложение. Рейтинг",
-    "setting": "настройка",
-    "sound": "звук"
+      "bgmsound": "Звук фоновой музыки",
+       "close": "закрыть",
+       "effectsound": "Звук эффекта",
+       "language": "языки",
+       "privacy-policy": "Политика конфиденциальности",
+       "rate": "Ставка",
+       "setting": "настройка",
+       "sound": "звук",
+       "version": "версия",
+       "vibration": "вибрация"
   }
 }
