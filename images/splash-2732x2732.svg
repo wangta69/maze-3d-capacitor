@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="2732mm"
+   height="2732mm"
+   viewBox="0 0 2732 2732"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="splash-2732x2732.svg"
+   inkscape:export-filename="splash-2732x2732.png"
+   inkscape:export-xdpi="25.400002"
+   inkscape:export-ydpi="25.400002"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.04665165"
+     inkscape:cx="4587.1904"
+     inkscape:cy="5594.6575"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer4" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="text"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:70.5556px;fill:#338000;stroke-width:0.264583"
+       x="855.98602"
+       y="-1802.6433"
+       id="text397"
+       transform="rotate(90)"><tspan
+         sodipodi:role="line"
+         id="tspan395"
+         x="855.98602"
+         y="-1802.6433"
+         style="font-size:70.5556px;fill:#338000;stroke-width:0.264583">Brain Games</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="BI">
+    <path
+       style="display:inline;fill:#000000;stroke-width:1.64383"
+       d="M 944.0209,1242.4994 V 852.91098 h 389.5888 389.5882 v 389.58842 389.588 H 1333.6097 944.0209 Z m 739.7248,184.931 v -165.2049 h -115.8902 -115.8901 v 78.0818 78.0819 h 41.9179 41.9178 v 18.9044 18.904 h -63.2878 -63.2874 v -213.6982 -213.6981 h 63.2874 63.2878 v 18.9039 18.9039 h -41.9178 -41.9179 v 78.0823 78.0819 h 115.8901 115.8902 V 1057.5681 892.36319 h -350.136 -350.13659 v 165.20491 165.2052 h 115.89059 115.8902 v -78.0819 -78.0823 h -41.9178 -41.9179 v -18.9039 -18.9039 h 60.8218 60.8218 v 213.6981 213.6982 h -60.8218 -60.8218 v -18.904 -18.9044 h 41.9179 41.9178 v -78.0819 -78.0818 H 1099.3637 983.47311 v 165.2049 165.2053 h 350.13659 350.136 z m -662.4644,11.5067 v -115.8898 h 60.8219 60.8217 v 18.904 18.9039 h -41.9338 -41.9335 l 0.4269,77.6711 0.4269,77.671 h 126.996 126.9959 V 1242.4994 968.80118 h -126.9959 -126.996 l -0.4269,77.67102 -0.4269,77.6714 h 41.9335 41.9338 v 18.9039 18.904 h -60.8217 -60.8219 V 1046.0613 930.17111 h 312.3284 312.3281 v 115.89019 115.8902 h -60.8218 -60.822 v -18.904 -18.9039 h 41.9337 41.9338 l -0.4269,-77.6714 -0.4273,-77.67102 h -126.9957 -126.9955 v 273.69822 273.6979 h 126.9955 126.9957 l 0.4273,-77.671 0.4269,-77.6711 h -41.9338 -41.9337 v -18.9039 -18.904 h 60.822 60.8218 v 115.8898 115.8902 h -312.3281 -312.3284 z"
+       id="path195" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:116.718px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;display:inline;fill:#ffcc00;stroke-width:0.437692"
+       x="1369.6821"
+       y="1231.7842"
+       id="text333"
+       transform="scale(0.68974231,1.4498168)"><tspan
+         id="tspan331"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:116.718px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffcc00;stroke-width:0.437692"
+         x="1369.6821"
+         y="1231.7842"
+         sodipodi:role="line">3D MAZE PUZZLE</tspan></text>
+  </g>
+</svg>

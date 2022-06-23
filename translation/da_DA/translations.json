@@ -4,11 +4,15 @@
   },
   "localpushmessage": "Ha det rart og held og lykke til dig",
   "setting": {
-    "close": "Tæt",
-    "language": "Sprog",
-    "privacy-policy": "Fortrolighedspolitik",
-    "rate": "App. Bedømmelse",
-    "setting": "Indstilling",
-    "sound": "Lyd"
+      "bgmsound": "BGM-lyd",
+        "close": "Luk",
+        "effectsound": "Effektlyd",
+        "language": "Sprog",
+        "privacy-policy": "Privatlivspolitik",
+        "rate": "App-bedømmelse",
+        "setting": "Indstilling",
+        "sound": "Lyd",
+        "version": "version",
+        "vibration": "vibration"
   }
 }

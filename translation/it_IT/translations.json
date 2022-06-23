@@ -3,11 +3,15 @@
   },
   "localpushmessage": "Buona e buona fortuna a te",
   "setting": {
-    "close": "Vicina",
-    "language": "Le lingue",
-    "privacy-policy": "politica sulla riservatezza",
-    "rate": "App. Valutazione",
-    "setting": "Ambientazione",
-    "sound": "Suono"
+      "bgmsound": "Suono BGM",
+        "close": "Chiudi",
+        "effectsound": "Suono effetto",
+        "language": "Lingue",
+        "privacy-policy": "Privacy Policy",
+        "rate": "Valutazione app",
+        "setting": "impostazione",
+        "sound": "Suono",
+        "version": "versione",
+        "vibration": "vibrazione"
   }
 }

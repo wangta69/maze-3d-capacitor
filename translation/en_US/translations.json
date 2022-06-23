@@ -4,11 +4,15 @@
   },
   "localpushmessage": "Have nice day and good luck to you",
   "setting": {
-    "close": "Close",
-    "language": "Languages",
-    "privacy-policy": "Privacy Policy",
-    "rate": "App. Rating",
-    "setting": "Setting",
-    "sound": "Sound"
+      "close": "Close",
+        "language": "Languages",
+        "privacy-policy": "Privacy Policy",
+        "rate": "App Rating",
+        "setting": "Setting",
+        "sound": "Sound",
+        "bgmsound": "BGM Sound",
+        "effectsound": "Effect Sound",
+        "version": "version",
+        "vibration": "vibration"
   }
 }

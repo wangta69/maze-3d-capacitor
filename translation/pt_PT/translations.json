@@ -4,11 +4,15 @@
   },
   "localpushmessage": "Tenha boa e boa sorte para você",
   "setting": {
-    "close": "Fechar",
-    "language": "línguas",
-    "privacy-policy": "Política de Privacidade",
-    "rate": "Aplicativo. Avaliação",
-    "setting": "Configuração",
-    "sound": "Som"
+      "bgmsound": "Som BGM",
+       "close": "Close",
+       "effectsound": "Efeito de som",
+       "language": "Idiomas",
+       "privacy-policy": "Política de privacidade",
+       "rate": "Classificação da aplicação",
+       "setting": "Setting",
+       "sound": "Som",
+       "version": "versão",
+       "vibration": "vibração"
   }
 }

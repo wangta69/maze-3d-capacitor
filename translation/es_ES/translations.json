@@ -3,11 +3,15 @@
   },
   "localpushmessage": "Que tengas buena y buena suerte",
   "setting": {
-    "close": "Cerrar",
-    "language": "Idiomas",
-    "privacy-policy": "Política de privacidad",
-    "rate": "App. Clasificación",
-    "setting": "Ajuste",
-    "sound": "Sonido"
+      "bgmsound": "Sonido de música de fondo",
+        "close": "cerca",
+        "effectsound": "Efecto de sonido",
+        "language": "idiomas",
+        "privacy-policy": "Política de privacidad",
+        "rate": "Abrir la aplicación",
+        "setting": "ajuste",
+        "sound": "sonido",
+        "version": "versión",
+        "vibration": "vibración"
   }
 }

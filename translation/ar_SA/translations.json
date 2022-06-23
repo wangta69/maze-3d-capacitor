@@ -3,11 +3,15 @@
   },
   "localpushmessage": "اتمنى لك التوفيق ونتمنى لك التوفيق",
   "setting": {
-    "close": "قريب",
-    "language": "اللغات",
-    "privacy-policy": "سياسة خاصة",
-    "rate": "تطبيق. تقييم",
-    "setting": "ضبط",
-    "sound": "صوت"
+      "bgmsound": "صوت BGM",
+        "close": "قريب",
+        "effectsound": "تأثير الصوت",
+        "language": "اللغات",
+        "privacy-policy": "سياسة خاصة",
+        "rate": "تقييم التطبيق",
+        "setting": "ضبط",
+        "sound": "صوت",
+        "version": "إصدار",
+        "vibration": "اهتزاز"
   }
 }

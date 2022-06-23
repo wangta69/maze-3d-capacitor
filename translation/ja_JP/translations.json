@@ -3,11 +3,15 @@
   },
   "localpushmessage": "幸運を祈ります",
   "setting": {
-    "close": "閉じる",
-    "language": "言語",
-    "privacy-policy": "個人情報保護方針",
-    "rate": "アプリ 格付け",
-    "setting": "セッティング",
-    "sound": "音"
+      "bgmsound": "BGMサウンド",
+        "close": "閉じる",
+        "effectsound": "効果音",
+        "language": "言語",
+        "privacy-policy": "プライバシーポリシー",
+        "rate": "割合",
+        "setting": "設定",
+        "sound": "音",
+        "version": "バージョン",
+        "vibration": "バイブレーション"
   }
 }

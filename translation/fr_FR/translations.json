@@ -4,11 +4,15 @@
   },
   "localpushmessage": "Bonne chance à toi",
   "setting": {
-    "close": "proche",
-    "language": "Langues",
-    "privacy-policy": "Politique de confidentialité",
-    "rate": "App. Évaluation",
-    "setting": "Réglage",
-    "sound": "du son"
+      "bgmsound": "Son BGM",
+        "close": "proche",
+        "effectsound": "Effet sonore",
+        "language": "Langages",
+        "privacy-policy": "Politique de confidentialité",
+        "rate": "Évaluation de l'application",
+        "setting": "Paramètre",
+        "sound": "Du son",
+        "version": "version",
+        "vibration": "vibration"
   }
 }

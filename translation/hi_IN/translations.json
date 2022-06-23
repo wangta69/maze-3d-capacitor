@@ -3,11 +3,15 @@
   },
   "localpushmessage": "आपको शुभकामनाएँ और शुभकामनाएँ",
   "setting": {
-    "close": "बंद करे",
-    "language": "बोली",
-    "privacy-policy": "गोपनीयता नीति",
-    "rate": "अनुप्रयोग। रेटिंग",
-    "setting": "स्थापना",
-    "sound": "ध्वनि"
+      "bgmsound": "बीजीएम ध्वनि",
+        "close": "बंद करे",
+        "effectsound": "प्रभाव ध्वनि",
+        "language": "बोली",
+        "privacy-policy": "गोपनीयता नीति",
+        "rate": "ऐप की रेटिंग",
+        "setting": "सेटिंग",
+        "sound": "ध्वनि",
+        "version": "संस्करण",
+        "vibration": "कंपन"
   }
 }

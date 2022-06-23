@@ -1,45 +1,18 @@
 {
   "game": {
-    "callisto": "người gọi",
-    "deimos": "deimos",
-    "earth": "Trái đất",
-    "europa": "châu âu",
-    "ganymede": "ganymede",
-    "hyperion": "cường điệu",
-    "iapetus": "iapetus",
-    "info": {
-      "density": "tỉ trọng",
-      "diameter": "đường kính",
-      "distance": "khoảng cách",
-      "gravity": "Trọng lực",
-      "mass": "khối lượng",
-      "radius": "bán kính",
-      "revolution": "Cuộc cách mạng",
-      "rotation": "Vòng xoay",
-      "satellites": "vệ tinh"
-    },
-    "io": "io",
-    "jupiter": "sao Mộc",
-    "mars": "Sao Hỏa",
-    "mercury": "thủy ngân",
-    "moon": "mặt trăng",
-    "neptune": "sao Hải vương",
-    "phobos": "ám ảnh",
-    "rhea": "đại hoàng",
-    "saturn": "sao Thổ",
-    "sun": "mặt trời",
-    "titan": "titan",
-    "triton": "triton",
-    "uranus": "Sao Thiên Vương",
-    "venus": "sao Kim"
+
   },
   "localpushmessage": "Chúc bạn may mắn",
   "setting": {
-    "close": "Đóng",
-    "language": "Ngôn ngữ",
-    "privacy-policy": "Chính sách bảo mật",
-    "rate": "Ứng dụng. Xêp hạng",
-    "setting": "Cài đặt",
-    "sound": "Âm thanh"
+      "bgmsound": "Âm thanh nhạc nền",
+        "close": "Đóng",
+        "effectsound": "Âm thanh hiệu ứng",
+        "language": "Ngôn ngữ",
+        "privacy-policy": "Chính sách bảo mật",
+        "rate": "Tỷ lệ",
+        "setting": "Cài đặt",
+        "sound": "Âm thanh",
+        "version": "phiên bản",
+        "vibration": "rung"
   }
 }

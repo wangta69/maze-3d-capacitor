@@ -1,13 +1,17 @@
 {
   "game": {
   },
-  "localpushmessage": "당신에게 좋은 행운을 빕니다",
+  "localpushmessage": "오늘도 힘내시고 멋진하루 되세요",
   "setting": {
-    "close": "닫기",
-    "language": "언어",
-    "privacy-policy": "개인정보보호정책",
-    "rate": "앱. 평가",
-    "setting": "환경",
-    "sound": "소리"
+      "close": "닫기",
+        "language": "언어",
+        "privacy-policy": "개인 정보 보호 정책",
+        "rate": "앱평가",
+        "setting": "설정",
+        "sound": "소리",
+        "bgmsound": "BGM 사운드",
+        "effectsound": "효과음",
+        "version": "버전",
+        "vibration": "진동"
   }
 }
