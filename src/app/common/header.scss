@@ -1,7 +1,7 @@
 :host {
     position: absolute;
     width: 100%;
-    z-index: 9999;
+    z-index: 999; // 999가 넘어면 cdk-overlay-container 가 10000 이므로 클릭이 활성화 된다.
     color: #fff;
 
     header {

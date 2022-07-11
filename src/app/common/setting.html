@@ -7,9 +7,16 @@
         </li>
         <li>
             <mat-slide-toggle
-                [checked]="sound"
-                (change)="setSound($event)">
-                {{ 'setting.sound' | translate }}
+                [checked]="bgmsound"
+                (change)="setBGMSound($event)">
+                {{ 'setting.bgmsound' | translate }}
+            </mat-slide-toggle>
+        </li>
+        <li>
+            <mat-slide-toggle
+                [checked]="effectsound"
+                (change)="setEffectSound($event)">
+                {{ 'setting.effectsound' | translate }}
             </mat-slide-toggle>
         </li>
         <li>
@@ -22,14 +29,14 @@
         <li>
             <span (click)="appRating()">{{ 'setting.rate' | translate }}</span>
         </li>
-        <li>
+        <!-- <li>
             <mat-form-field>
               <mat-label>Template</mat-label>
               <mat-select (selectionChange)="setTemplate($event)" [value]="template">
                 <mat-option *ngFor="let template of templates" [value]="template.type">{{template.template}}</mat-option>
               </mat-select>
             </mat-form-field>
-        </li>
+        </li> -->
         <!--
 
         <li>

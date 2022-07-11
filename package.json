@@ -28,6 +28,7 @@
     "@capacitor/app": "^1.1.1",
     "@capacitor/core": "latest",
     "@capacitor/filesystem": "^1.1.0",
+    "@capacitor/haptics": "^1.1.4",
     "@capacitor/local-notifications": "^1.1.0",
     "@capacitor/status-bar": "^1.0.8",
     "@ngx-translate/core": "^14.0.0",

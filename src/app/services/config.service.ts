@@ -1,21 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class ConfigService {
 
     private soundSubject = new Subject<any>();
+    private bgmSoundSubject = new Subject<any>();
+    private effectSoundSubject = new Subject<any>();
     private vibrationSubject = new Subject<any>();
     private languageSubject = new Subject<any>();
-    private templateSubject = new Subject<any>();
     private config: any;
     private storageName = 'game.maze3d.config';
 
     constructor()
     {
         const config = localStorage.getItem(this.storageName);
+        (window as any).config$ = new BehaviorSubject<any>(null); // 초기 화면이 완료되면
         if(config) {
             this.config = JSON.parse(config);
+
+            (window as any).config$.next(this.config);
+            if (typeof this.config.bgmsound === 'undefined') { // 버젼별 차이
+                this.resetConfig();
+            }
         } else {
             this.resetConfig();
         }
@@ -28,14 +35,16 @@ export class ConfigService {
         // const gameConfig = JSON.parse(localStorage.getItem('config'))
         this.config = {
             sound: true,
+            bgmsound: true,
+            effectsound: true,
             vibration: true,
-            language: 'en',
-            template: 'type2'
-        }
+            language: 'en'
+        };
         this.store();
     }
 
     private store(): void {
+        (window as any).config$.next(this.config);
         localStorage.setItem(this.storageName, JSON.stringify(this.config));
     }
 
@@ -53,15 +62,6 @@ export class ConfigService {
         return this.config.vibration;
     }
 
-    set template(v: string) {
-        this.config.template = v;
-        this.store();
-    }
-
-    get template(): string {
-        return this.config.template;
-    }
-
     set sound(bool: boolean) {
         this.config.sound = bool;
         this.store();
@@ -71,7 +71,23 @@ export class ConfigService {
         return this.config.sound;
     }
 
+    set bgmsound(bool: boolean) {
+        this.config.bgmsound = bool;
+        this.store();
+    }
 
+    get bgmsound(): boolean {
+        return this.config.bgmsound;
+    }
+
+    set effectsound(bool: boolean) {
+        this.config.effectsound = bool;
+        this.store();
+    }
+
+    get effectsound(): boolean {
+        return this.config.effectsound;
+    }
 
     get language(): string {
         return this.config.language;
@@ -93,6 +109,22 @@ export class ConfigService {
     }
     getSound(): Observable<boolean> {
         return this.soundSubject.asObservable();
+    }
+
+    setBGMSound(bool: boolean): void {
+        this.bgmsound = bool;
+        this.bgmSoundSubject.next(bool);
+    }
+    getBGMSound(): Observable<boolean> {
+        return this.bgmSoundSubject.asObservable();
+    }
+
+    setEffectSound(bool: boolean): void {
+        this.effectsound = bool;
+        this.effectSoundSubject.next(bool);
+    }
+    getEffectSound(): Observable<boolean> {
+        return this.effectSoundSubject.asObservable();
     }
 
     /**
@@ -120,32 +152,6 @@ export class ConfigService {
     getLanguage(): Observable<string> {
         return this.languageSubject.asObservable();
     }
-
-    setTemplate(lan: string) {
-        this.template = lan;
-        this.templateSubject.next(lan);
-    }
-    getTemplate(): Observable<string> {
-        return this.templateSubject.asObservable();
-    }
-
-
-
-
-
-    // /**
-    //  * 게임 환경을 초기화 시킨다.
-    //  */
-    // private gameConfig(): void {
-    //     let memoryGame = localStorage.getItem('memoryGame');
-    //     if (!memoryGame) {
-    //         const config = {highestScore: 0, level: 1, cardSet: 1};
-    //         localStorage.setItem('memoryGame', JSON.stringify(config));
-    //     }
-    // }
-
-
-
 
     /*
     * How todo

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+
 import { MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { ConfigService } from '../services/config.service';
-// import { Market } from '@ionic-native/market/ngx';
-// import { AppVersion } from '@ionic-native/app-version/ngx';
 import { NativeMarket } from '../components/native-market';
 import { environment } from '../../environments/environment';
 
@@ -18,12 +17,13 @@ interface Langulages {
   styleUrls: ['./setting.scss']
 })
 export class GameSettingDialogComponent implements OnInit {
-    sound = true;
-    vibration = true;
-    version =  '';
-    language: string | any;
-    template: any;
-    languages: Langulages[] = [
+    public sound = true;
+    public bgmsound = true;
+    public effectsound = true;
+    public vibration = true;
+    public version =  '';
+    public language: string | any;
+    public languages: Langulages[] = [
         {language: 'en', country: 'English'},
         {language: 'da', country: 'Dansk'},
         {language: 'it', country: 'italiano'},
@@ -31,13 +31,6 @@ export class GameSettingDialogComponent implements OnInit {
         {language: 'ko', country: '한국어'},
         {language: 'vi', country: 'ngôn ngữ tiếng Việt'},
         {language: 'zh', country: '中文'}
-    ];
-
-    templates: any = [
-        {template: 'icon', type: 'type2'},
-        {template: 'button', type: 'type1'},
-
-
     ];
 
     constructor(
@@ -49,11 +42,25 @@ export class GameSettingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.sound = this.coinfigSvc.sound;
+        this.bgmsound = this.coinfigSvc.bgmsound;
+        this.effectsound = this.coinfigSvc.effectsound;
         this.language = this.coinfigSvc.language;
         this.vibration = this.coinfigSvc.vibration;
-        this.template = this.coinfigSvc.template;
-        console.log('this.coinfigSvc.template', this.coinfigSvc.template);
         this.version = environment.appVersion.toString();
+        // this.appVersion.getVersionNumber().then((res: string) => {
+        //     this.version = res;
+        // }, (err) => { // {code: 1, message: 'NOT_FOUND_ERR'
+        //     console.log('err', err);
+        // });
+    }
+    public setBGMSound(e: any): void {
+        this.bgmsound = e.checked;
+        this.coinfigSvc.setBGMSound(this.bgmsound);
+    }
+
+    public setEffectSound (e: any): void {
+        this.effectsound = e.checked;
+        this.coinfigSvc.setEffectSound(this.effectsound);
     }
 
     setSound(e: any): void {
@@ -74,11 +81,6 @@ export class GameSettingDialogComponent implements OnInit {
 
     setTestLanguage(lan: string): void {
         this.coinfigSvc.setLanguage(lan);
-    }
-
-    setTemplate(e: any): void {
-        this.template = e.value;
-        this.coinfigSvc.setTemplate(e.value);
     }
 
     public appRating() {

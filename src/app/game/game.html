@@ -5,10 +5,10 @@
             <div>
                 <div class="level">
                     <span class="selected" (click)="expandLevels()">{{level}}</span>
-                    <div class="paging" *ngIf="levels.length">
-                        <span (click)="levelSection('prev')"> &#8249; </span>
-                        <span *ngFor="let level of levels" (click)="gotoLevel(level)">{{level}}</span>
-                        <span (click)="levelSection('next')"> &#8250; </span>
+                    <div class="paging" *ngIf="showPagingLevels">
+                        <span class="prev" (click)="levelSection('prev')"> &#8249; </span>
+                        <span *ngFor="let level of pagingLevels" (click)="gotoLevel(level)">{{level}}</span>
+                        <span class="next" (click)="levelSection('next')"> &#8250; </span>
                     </div>
                 </div>
                 <div class="hint">

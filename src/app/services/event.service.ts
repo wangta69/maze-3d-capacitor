@@ -12,6 +12,7 @@ export class EventService {
      * key : game, value : pause:게임중지, resume:게임재개, start:게임시작, created: 게임생성, finished: 게임완료;
      */
 
+    // this.eventSvc.broadcast('platform', {status: 'resume'});
     broadcast(type: string, payload: any) {
         this.handler.next({ type, payload });
     }
@@ -20,7 +21,7 @@ export class EventService {
          return this.handler.asObservable();
      }
 
-    sendMessage(obj: any) {
+    sendMessage(obj: any) {``
         this.subject.next(obj);
     }
 

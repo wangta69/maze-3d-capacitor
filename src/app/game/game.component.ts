@@ -1,10 +1,16 @@
 import { Component, OnInit, AfterViewInit, HostListener, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 
+import { EventService } from '../services/event.service';
+import { ConfigService } from '../services/config.service';
 import { AdMobService } from '../services/cap-admob.service';
 import * as THREE from 'three';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import OrbitControls from '../controller/orbit.controls';
+import { Haptics } from '@capacitor/haptics';
+import { Howl } from 'howler';
+import { Subject} from 'rxjs'; // , timer, Subject
+import { takeUntil} from 'rxjs/operators';
 // import OrbitControls from 'orbit-controls-es6';
 
 // 게임 플로우
@@ -30,6 +36,8 @@ import { environment } from '../../environments/environment';
 })
 export class GameComponent implements OnInit, AfterViewInit {
     @ViewChild('domContainer', {static: true}) domContainer!: ElementRef<HTMLDivElement>;
+    private ngUnsubscribe = new Subject();
+
     private sceneWidth!: number;
     private sceneHeight!: number;
     private gameStatus: GameStatus = 'init';
@@ -57,10 +65,18 @@ export class GameComponent implements OnInit, AfterViewInit {
     private fullMode = false;
     private highLevel!: number;
     public level!: number; // 현재 레벨
-    public levels: number[] = []; // 상단에 디스플레이될 레벨들
+    public pagingLevels: number[] = []; // 상단에 디스플레이될 레벨들
     private orbitControllerEnable = false;
+    public showPagingLevels = false; //
 
     private storage: any;
+
+    private sounds: any = {
+        roll: {} as any,
+        goal: {} as any,
+        kick: {} as any,
+        bgm: {} as any
+    };
 
 /*
     @HostListener('document:mousemove', ['$event'])
@@ -89,6 +105,8 @@ export class GameComponent implements OnInit, AfterViewInit {
     }
 
     constructor(
+        private eventSvc: EventService,
+        private configSvc: ConfigService,
         private admobService: AdMobService,
     ) {
         this.storage = new Storage();
@@ -106,7 +124,28 @@ export class GameComponent implements OnInit, AfterViewInit {
         }, 10);
     }
     private init() {
+        this.eventSvc.subscribe()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((obj: any) => {
+            if (obj.type === 'platform' ) {
+                if (obj.payload.status === 'pause') {
+                    this.sounds.bgm.stop();
+                } else {
+                    this.sounds.bgm.play();
+                }
+            }
+        });
 
+        this.setSounds();
+        this.configSvc.getBGMSound()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((bool: boolean) => {
+            if (bool) {
+                this.sounds.bgm.play();
+            } else {
+                this.sounds.bgm.stop();
+            }
+        });
         // this.sceneWidth = window.innerWidth;
         // this.sceneHeight  = window.innerHeight;
         this.sceneWidth = this.domContainer.nativeElement.offsetWidth;
@@ -142,6 +181,66 @@ export class GameComponent implements OnInit, AfterViewInit {
         // this.setAxesHelper();
         // this.setGridHelper();
         this.update();
+    }
+    private setSounds() {
+
+        this.sounds.kick = new Howl({
+            src: ['/assets/sounds/kick.ogg'],
+            preload: true,
+            onend: () => { // e
+            },
+            onloaderror: () => {
+            },
+        });
+
+        this.sounds.goal = new Howl({
+            src: ['/assets/sounds/explode.mp3'],
+            preload: true,
+            onend: () => { // e
+            },
+            onloaderror: () => {
+            },
+        });
+
+        // this.sounds.roll = new Howl({
+        //     src: ['/assets/sounds/roll.ogg'],
+        //     preload: true,
+        //     volume: 0.1,
+        //     onend: () => { // e
+        //     },
+        //     onloaderror: () => {
+        //     },
+        // });
+
+        // if (this.sounds.click) {
+        //     this.sounds.click.autoSuspend = false;
+        // }
+
+        this.sounds.bgm = new Howl({
+          src: ['/assets/sounds/bgm-for-fun.ogg'],
+          preload: true,
+          loop: true,
+          volume: 0.1,
+        });
+
+        this.sounds.bgm.once('load', () => {
+          this.playGameSound('bgm');
+        });
+    }
+
+    private playGameSound(sound: string) {
+        switch(sound) {
+            case 'bgm':
+                if (this.configSvc.bgmsound) {
+                    this.sounds[sound].play();
+                }
+                break;
+            default:
+                if (this.configSvc.effectsound) {
+                    this.sounds[sound].play();
+                }
+            break;
+        }
     }
 
     private setRenderer() {
@@ -310,14 +409,17 @@ export class GameComponent implements OnInit, AfterViewInit {
                 if (Math.abs(this.light.intensity - 1.0) < 0.05) {
                     this.light.intensity = 1.0;
                     this.actGameState('play');
+
                 }
                 break;
             case 'init':
             //    this.light.intensity += 0.1 * (0.0 - this.light.intensity);
                 break;
             case 'fadeOut': // 어두워 진 후 새게임 생성
+
                 this.light.intensity += 0.1 * (0.0 - this.light.intensity);
                 if (Math.abs(this.light.intensity - 0.0) < 0.1) {
+                    this.playGameSound('goal');
                     this.light.intensity = 0.0;
                     this.actGameState('ready');
                 }
@@ -401,8 +503,11 @@ export class GameComponent implements OnInit, AfterViewInit {
         endBoxBody.addEventListener('collide', () => {
             this.actGameState('fadeOut');
             this.level++;
+
             this.storage.level = this.level;
             this.storage.highLevel = this.level;
+            this.highLevel = this.storage.highLevel;
+            this.updatePagingLevels();
             this.showInterstitial();
 
         });
@@ -477,6 +582,11 @@ export class GameComponent implements OnInit, AfterViewInit {
                 const cannonVector = new CANNON.Vec3(forceVector.x * thrustImpulse, forceVector.y * thrustImpulse, forceVector.z * thrustImpulse);
 
                 // Apply the impulse at the center of the body
+                this.playGameSound('kick');
+                // this.playGameSound('roll');
+                if (this.configSvc.vibration === true) {
+                    Haptics.vibrate({duration: 20});
+                }
                 this.ballBody.applyImpulse(cannonVector, this.ballBody.position);
             }
             // var intersects = ray.intersectObjects( targetList, true );
@@ -542,43 +652,34 @@ export class GameComponent implements OnInit, AfterViewInit {
 
     // level 이동 관련
     public expandLevels() {
-        if (this.levels.length) {
-            this.levels = [];
-        } else {
+        this.showPagingLevels = !this.showPagingLevels;
+        this.updatePagingLevels();
+    }
+
+    private updatePagingLevels() {
+        console.log('updatePagingLevels');
+        this.pagingLevels = [];
+        if (this.showPagingLevels) {
             let start = 0; //
             let end = 0;
             const overCnt = this.highLevel - this.level;
 
-            if (overCnt > 5) {
+            if (overCnt > 3) {
                 start = this.level;
-                end = this.level + 4;
+                end = this.level + 2;
 
             } else {
                 end = this.highLevel;
-                start = end - 4;
+                start = end - 2;
+                start = start < 1 ? 1 : start;
             }
             for (let i = start; i <= end  ; i++) {
-                this.levels.push(i);
+                this.pagingLevels.push(i);
             }
-
-            // 현재 레벨을 기준으로 좌측으로 5개의 레베을 디스플레이 한다. (최대 5개)
-            // 최대에서 현재 레벨까지 카운트 다운
-            // 최대에서 현재까지 카운트 다운중 5개가 넘어면 최대부터 학제
-            // 최대에서 현재까지 카운트 다운중 5개가 안되면 아래로도 포함
-            // for (let i = this.highLevel; i > 0  ; i--) {
-            //     if (this.levels.length === 5) {
-            //         this.levels.push(i);
-            //     } else {
-            //         this.levels.push(i);
-            //     }
-            //
-            //
-            //
-            // }
         }
     }
     public gotoLevel(level: number) {
-        this.levels = [];
+        this.showPagingLevels = false;
         this.level = level;
         this.actGameState('ready');
         this.showInterstitial();
@@ -590,22 +691,21 @@ export class GameComponent implements OnInit, AfterViewInit {
     public levelSection(flag: string) {
         switch(flag) {
             case 'prev':
-                if (this.levels[0] !== 1) {
-                    this.levels.unshift(this.levels[0] - 1);
-                    this.levels.pop();
+                if (this.pagingLevels[0] !== 1) {
+                    this.pagingLevels.unshift(this.pagingLevels[0] - 1);
+                    this.pagingLevels.pop();
                 }
                 break;
             case 'next':
-                if (this.levels[this.levels.length -1] !== this.highLevel) {
-                    this.levels.push(this.levels[this.levels.length -1] + 1);
-                    this.levels.shift();
+                if (this.pagingLevels[this.pagingLevels.length -1] !== this.highLevel) {
+                    this.pagingLevels.push(this.pagingLevels[this.pagingLevels.length -1] + 1);
+                    this.pagingLevels.shift();
                 }
                 break;
         }
     }
 
     private showInterstitial() {
-        console.log('showInterstitial');
         const rand = Math.floor((Math.random() * 3) + 1);
         console.log(rand);
         if (rand === 3 && Capacitor.isNativePlatform()) {
