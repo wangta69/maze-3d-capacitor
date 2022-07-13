@@ -37,9 +37,9 @@ export class AppComponent implements OnInit, OnDestroy { //  implements OnInit, 
     ngOnInit() {
         App.addListener('appStateChange', (state: AppState) => {
             if(state.isActive) {
-                this.eventSvc.broadcast('platform', {status: 'resume'});
+                this.eventSvc.broadcast('appStateChange', {status: 'resume'});
             } else {
-                this.eventSvc.broadcast('platform', {status: 'pause'});
+                this.eventSvc.broadcast('appStateChange', {status: 'pause'});
             }
         });
 

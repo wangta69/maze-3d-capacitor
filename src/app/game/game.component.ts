@@ -127,11 +127,12 @@ export class GameComponent implements OnInit, AfterViewInit {
         this.eventSvc.subscribe()
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((obj: any) => {
-            if (obj.type === 'platform' ) {
+            if (obj.type === 'appStateChange' ) {
                 if (obj.payload.status === 'pause') {
                     this.sounds.bgm.stop();
                 } else {
-                    this.sounds.bgm.play();
+                    this.playGameSound('bgm');
+                    // this.sounds.bgm.play();
                 }
             }
         });
