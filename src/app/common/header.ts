@@ -1,28 +1,33 @@
 import { NgModule, Component } from '@angular/core';
-import { CommonModule } from '@angular/common'
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+
+import { Share } from '@capacitor/share';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { GameSettingDialogComponent, GameSettingIconComponent } from './setting';
+
+import { environment } from '../../environments/environment';
 @Component({
     selector: 'app-header',
     template: `
-    <header class="title">
+    <header>
         <div class="title">
              <a href="/"><img src="/assets/icon/favicon.png"></a>
         </div>
         <div class="end">
-            <span class="goto-games">
+            <span (click)="share()">
+                <mat-icon svgIcon="share"></mat-icon>
+            </span>
+            <span>
                 <a href='/games'>
-                    <mat-icon class="icon-controller" svgIcon="controller"></mat-icon>
+                    <mat-icon svgIcon="controller"></mat-icon>
                 </a>
-        </span>
+            </span>
             <game-setting></game-setting>
         </div>
     </header>
@@ -33,7 +38,16 @@ import { GameSettingDialogComponent, GameSettingIconComponent } from './setting'
 export class HeaderComponent {
 
     constructor() { // , private router: Router
+    }
 
+    async share() {
+        const  url = 'https://play.google.com/store/apps/details?id=' + environment.appId
+        await Share.share({
+          title: environment.appName,
+          text: 'This reallly funny game',
+          url: url,
+          dialogTitle: 'Share with buddies',
+        });
     }
 }
 
@@ -48,14 +62,11 @@ export class HeaderComponent {
     ],
     imports: [
         RouterModule,
-        CommonModule,
         MatIconModule,
         MatButtonModule,
         MatDialogModule,
         MatSlideToggleModule,
         MatSliderModule,
-        MatFormFieldModule,
-        MatSelectModule,
         TranslateModule
     ],
     exports: [ HeaderComponent ]

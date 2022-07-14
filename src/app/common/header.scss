@@ -2,8 +2,6 @@
     position: absolute;
     width: 100%;
     z-index: 999; // 999가 넘어면 cdk-overlay-container 가 10000 이므로 클릭이 활성화 된다.
-    color: #fff;
-
     header {
         height: 40px;
         box-sizing: border-box;
@@ -15,17 +13,14 @@
             img {width: 25px; height: 25px; border-radius: 50%;}
         }
 
-        .goto-games {
+        .end {
+            mat-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 20px;
+            }
             a {
                 color: white;
-                mat-icon {
-                    width: 24px;
-                    height: 24px;
-                    margin-right: 20px;
-                    // border: 1px solid #fff;
-                    // border-radius: 50%;
-                    // padding: 2px;
-                }
             }
         }
     }
